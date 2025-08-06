@@ -8,8 +8,7 @@ function test_get(){
 function test_post(){
     curl -H "Content-Type:application/json" \
     -X POST http://localhost:5000/api/v1/users/ \
-    -d '{"email":"boris@gmail.com","password":"caroline123"}'
+    -d '{"firstname":"boris","lastname":"rose","email":"boris@gmail.com","password":"caroline123"}'
 }
 
-
-test_get
+test_post
