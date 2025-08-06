@@ -16,7 +16,7 @@ def me():
     user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
     if not user:
        return jsonify(message="invalid data")
-    return user.to_dict()
+    return jsonify(user=user.to_dict())
 
 #http://localhost:5000/api/v1/users
 @api_v1_users.route("/", methods=["POST", "GET"])
@@ -25,7 +25,7 @@ def get_all_or_create_user():
     """ GET ALL USERS OR CREATE A USER """
     if request.method == "GET":
         users = db.session.execute(db.select(User).order_by(User.email)).scalars()
-        return [user.to_dict() for user in users]
+        return jsonify(users=[user.to_dict() for user in users])
     else:
         data = request.get_json()
         email =  data.get('email')
