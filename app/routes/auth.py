@@ -1,6 +1,4 @@
 from flask import session, Blueprint, jsonify, request
-
-from app.services.auth import admin_required
 from ..services import session_required, json_required_with_keys
 from ..database import db 
 from ..database.models import User
@@ -9,7 +7,6 @@ api_v1_auth = Blueprint("api_v1_auth", __name__, url_prefix="/api/v1/auth")
 
 
 @api_v1_auth.route('/login', methods=["POST"])
-@admin_required
 @json_required_with_keys('email', 'password')
 def login():
     """ Log in the user """

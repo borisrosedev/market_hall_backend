@@ -2,6 +2,7 @@ import logging
 
 from flask import Blueprint, request, jsonify, session
 from ..database import db 
+from ..services import admin_required_with_exceptions
 from ..database.models import User
 from ..services import json_required_with_validation, session_required
 api_v1_users = Blueprint("api_v1_users", __name__,url_prefix="/api/v1/users")
@@ -18,9 +19,9 @@ def me():
        return jsonify(message="invalid data")
     return jsonify(user=user.to_dict())
 
-#http://localhost:5000/api/v1/users
+
 @api_v1_users.route("/", methods=["POST", "GET"])
-# Ajout en Get la fonction ici decorateur 
+@admin_required_with_exceptions(True, "POST")
 @json_required_with_validation('email', 'password', 'firstname', 'lastname')
 def get_all_or_create_user():
     """ GET ALL USERS OR CREATE A USER """
