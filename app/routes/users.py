@@ -20,6 +20,7 @@ def me():
 
 #http://localhost:5000/api/v1/users
 @api_v1_users.route("/", methods=["POST", "GET"])
+# Ajout en Get la fonction ici decorateur 
 @json_required_with_validation('email', 'password', 'firstname', 'lastname')
 def get_all_or_create_user():
     """ GET ALL USERS OR CREATE A USER """
