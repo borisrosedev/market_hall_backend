@@ -1,6 +1,11 @@
 from functools import wraps
 from flask import session, jsonify
 
+def admin_required(f):
+    """ verify if role admin is in session """
+    pass
+
+
 def session_required(f):
     """ verify if email is in session """
     @wraps(f)

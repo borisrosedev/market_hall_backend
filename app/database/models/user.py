@@ -44,5 +44,6 @@ class User(db.Model):
             "firstname": self.firstname,
             "lastname": self.lastname,
             "email": self.email,
-            "role": self.role.value
+            "role": self.role.value,
+            "fullname": self.get_fullname()
         }
