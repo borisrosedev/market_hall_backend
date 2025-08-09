@@ -9,8 +9,8 @@ from .database import db
 
 def create_app():
     """ CREATE THE APP """
-    app = Flask(__name__)
     load_dotenv()
+    app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
     app.secret_key=os.getenv("SECRET_KEY")
     app.config['PERMANENT_SESSION_LIFETIME']= timedelta(minutes=15)
