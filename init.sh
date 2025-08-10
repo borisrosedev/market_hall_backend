@@ -4,6 +4,30 @@ CYAN_COLOR='\033[1;36m'
 GREEN_COLOR='\033[1;34m'
 NO_COLOR='\033[0m'
 
+function getOs() { 
+
+unameOut=$(uname -a)
+OS_NAME="UNKNOWN"
+case "${unameOut}" in
+    *Microsoft*)     OS="WSL";; #must be first since Windows subsystem for linux will have Linux in the name too
+    *microsoft*)     OS="WSL2";; #WARNING: My v2 uses ubuntu 20.4 at the moment slightly different name may not always work
+    Linux*)     OS="Linux";;
+    Darwin*)    OS="Mac";;
+    CYGWIN*)    OS="Cygwin";;
+    MINGW*)     OS="Windows";;
+    *Msys)     OS="Windows";;
+    *)          OS="UNKNOWN:${unameOut}"
+esac 
+if [[ ${OS} == "Windows" || ${OS} == "Cygwin" || ${OS} == "MINGW" || ${OS} == "Msys" ]]; then
+  
+  OS_NAME="WIN"
+elif [[  ${OS} == "Mac" ]]; then
+    OS_NAME="MAC"
+ else 
+    OS_NAME="UNK" 
+fi
+}
+ 
 
 function git_init {
 
@@ -21,7 +45,11 @@ function activate_venv {
     read -r execute_answer
 
     if [ "$execute_answer" = 'yes' ]; then  
-        source .venv/bin/activate
+        if [[ ${OS_NAME} == "WIN" ]]; then  
+            source .venv/Scripts/activate
+        else 
+            source .venv/bin/activate
+        fi
         echo -e "${GREEN_COLOR}🚀 virtual environment activated ${NO_COLOR}"
     else
         exit 1
@@ -38,7 +66,13 @@ function python_env {
     fi
     activate_venv
 }
+getOs
+echo -e "${CYAN_COLOR}$Detected  os ${OS_NAME} ${NO_COLOR}"
 
 git_init
 python_env
 
+ 
+if [[ ${OS_NAME} == "WIN" ]]; then  
+  read -n 1 -s -r -p "Press a key to continue"  
+fi	
