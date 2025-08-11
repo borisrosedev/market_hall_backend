@@ -64,7 +64,7 @@ def get_all_or_create_product():
 
 # route to  handle the update of a product 
 @session_required
-@api_v1_products.route("/update/<int:product_id>", methods=["POST"])
+@api_v1_products.route("/update/<int:product_id>", methods=["PUT"])
 def update_product(product_id):   
     """ UPDATE A PRODUCT """  
     data = request.get_json()
