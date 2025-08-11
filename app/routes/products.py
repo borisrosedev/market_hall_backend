@@ -25,6 +25,7 @@ def get_all_or_create_product():
         #products = db.session.execute(db.select(Product).order_by(Product.id)).scalars()
         return jsonify(product=[product.to_dict() for product in products])
     else:
+        
         data = request.get_json()
         id =  data.get('id')
         description = data.get('description')
@@ -35,11 +36,15 @@ def get_all_or_create_product():
         quantity= data.get('quantity')
         created_at= data.get('created_at')
         updated_at= data.get('updated_at')
-       
+        
+        try:
 
-        ex_product = db.session.execute(db.select(Product).filter_by(id=id)).scalar()
-        if ex_product:
-            return jsonify(message="invalid data"), 400
+            ex_product = db.session.execute(db.select(Product).filter_by(id=id)).scalar()
+            if ex_product:
+                return jsonify(message="invalid data"), 400
+        except Exception as e:
+            logging.error(f"Error checking existing product: {e}")  
+            return jsonify(message="error checking existing product"), 500
         
         product = Product(
             id=id,
@@ -52,14 +57,12 @@ def get_all_or_create_product():
             created_at=created_at,
             updated_at=updated_at
         )
-         
+        
         db.session.add(product)
         db.session.commit()
         return jsonify(message="product created")
     
-
-
-
+ 
 
 # route to  handle the update of a product 
 @session_required
