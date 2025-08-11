@@ -9,6 +9,8 @@ api_v1_products = Blueprint("api_v1_products", __name__,url_prefix="/api/v1/prod
 
 logging.basicConfig(level=logging.DEBUG)
 
+
+
 # api_v1_products.before_request() ( check to see if you put the decorator in before requrest )
 
 # route to handle the create of a new product  
@@ -66,6 +68,8 @@ def get_all_or_create_product():
                 quantity=quantity,
              
              )
+            logging.debug(f"Creating product: {product}")
+
             db.session.add(product)
             db.session.commit()
         except Exception as e:
