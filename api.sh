@@ -11,4 +11,14 @@ function test_post(){
     -d '{"firstname":"boris","lastname":"rose","email":"boris@gmail.com","password":"caroline123"}'
 }
 
-test_post
+
+function update_user(){
+
+ curl -H "Content-Type:application/json" \
+    -X PUT http://localhost:5000/api/v1/users/1 \
+    -d '{"firstname":"boris","lastname":"rose","email":"boris@gmail.com","password":"caroline123"}'
+}
+
+update_user
+
+

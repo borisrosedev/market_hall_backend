@@ -10,6 +10,7 @@ api_v1_users = Blueprint("api_v1_users", __name__,url_prefix="/api/v1/users")
 logging.basicConfig(level=logging.DEBUG)
 
 
+
 @api_v1_users.route("/me", methods=["GET"])
 @session_required
 def me():
@@ -18,6 +19,15 @@ def me():
     if not user:
        return jsonify(message="invalid data")
     return jsonify(user=user.to_dict())
+
+
+@api_v1_users.route("/<int:id>", methods=["PUT", "PATCH"])
+@session_required
+def updated_user(id):
+    print(f"id {id}")
+    jsonify(message="user updated")
+
+
 
 
 @api_v1_users.route("/", methods=["POST", "GET"])

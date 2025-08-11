@@ -24,7 +24,7 @@ class User(db.Model):
     photo_name: Mapped[str] = mapped_column(nullable=True)
     role: Mapped[UserRoles] = mapped_column(Enum(UserRoles), default=UserRoles.user)
     cart: Mapped[Optional["Cart"]] = relationship(
-        back_populates="users",
+        back_populates="user",
         uselist=False,
         cascade="all, delete-orphan",
         single_parent=True, 
