@@ -15,7 +15,7 @@ class Cart(db.Model):
         nullable=False,
     )
 
-
+    # cart will be a virtual field when querying a user 
     user: Mapped["User"] = relationship(back_populates="cart")
 
 
