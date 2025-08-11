@@ -66,13 +66,13 @@ def update_get_or_delete_user(user_id):
                 return jsonify(message="invalid data"), 400
             db.session.delete(user)
             db.session.commit()
-        return jsonify(message="user deleteD")
+        return jsonify(message="user deleted")
    
 
 
 
 @api_v1_users.route("/", methods=["POST", "GET"])
-@admin_required_with_exceptions(True, "POST")
+#@admin_required_with_exceptions(True, "POST")
 @json_required_with_validation('email', 'password', 'firstname', 'lastname')
 def get_all_or_create_user():
     """ GET ALL USERS OR CREATE A USER """
