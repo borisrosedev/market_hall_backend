@@ -19,7 +19,7 @@ class Product(db.Model):
     updated_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
     carts_link: Mapped[List["CartProduct"]] = relationship(
-        back_populates="products",
+        back_populates="product",
         passive_deletes=True,
     )
 
