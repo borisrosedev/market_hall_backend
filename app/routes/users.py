@@ -21,12 +21,53 @@ def me():
     return jsonify(user=user.to_dict())
 
 
-@api_v1_users.route("/<int:id>", methods=["PUT", "PATCH"])
-@session_required
-def updated_user(id):
-    print(f"id {id}")
-    jsonify(message="user updated")
 
+@api_v1_users.route("/<int:user_id>", methods=["GET","PUT", "PATCH", "DELETE"])
+@session_required
+def update_get_or_delete_user(user_id):
+    """ Update/GET/DELETE a user """
+    if request.method in ("PUT", "PATH"):
+        if "role" in session and session["role"] == "admin":
+            user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
+        else:
+            user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        if not user:
+            return jsonify(message="invalid data")
+        data = request.get_json()
+        if "firstname" in data:
+            user.firstname = data.get("firstname")
+        if "lastname" in data:
+            user.lastname = data.get("lastname")
+        if "password" in data:
+            user.password = data.get("password")
+        db.session.commit()  
+        return jsonify(message="user updated")
+    elif request.method == "GET":
+        if "role" in session and session["role"] == "admin":
+            user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
+            if not user:
+                return jsonify(message="invalid data"), 400
+            return jsonify(user=user.to_dict())
+        else:
+            user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+            if not user:
+                return jsonify(message="invalid data"), 400
+            return jsonify(user=user.to_dict())
+    else:
+        if "role" in session and session["role"] == "admin":
+            user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
+            if not user:
+                return jsonify(message="invalid data"), 400
+            db.session.delete(user)
+            db.session.commit()
+        else:
+            user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+            if not user:
+                return jsonify(message="invalid data"), 400
+            db.session.delete(user)
+            db.session.commit()
+        return jsonify(message="user deleteD")
+   
 
 
 
