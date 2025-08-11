@@ -13,15 +13,16 @@ logging.basicConfig(level=logging.DEBUG)
 
 # route to handle the create of a new product  
 # route to handle the getting of all products
-#  @session_required
+@session_required
 @api_v1_products.route("/", methods=["POST", "GET"])
-#@admin_required_with_exceptions(True, "POST")
-#@json_required_with_validation('id','name' )
 def get_all_or_create_product():
     """ GET ALL PRODUCTS OR CREATE A PRODUCT """     
-    print ("bgu request method", request.method)
+    
     if request.method == "GET":
-        products = db.session.execute(db.select(Product).order_by(Product.id)).scalars()
+        products = db.session.execute(db.select(Product)).scalar()
+        #prd = db.select(Product)
+        #products = db.session.execute(prd).scalars() 
+        #products = db.session.execute(db.select(Product).order_by(Product.id)).scalars()
         return jsonify(product=[product.to_dict() for product in products])
     else:
         data = request.get_json()
@@ -58,8 +59,60 @@ def get_all_or_create_product():
     
 
 
-# route to handler the getting of one product
+
 
 # route to  handle the update of a product 
+@session_required
+@api_v1_products.route("/update", methods=["POST"])
+def update_product():   
+    """ UPDATE A PRODUCT """  
+    data = request.get_json()
+    product_id = data.get("id")
+    if not product_id:
+        return jsonify(message="product id is required"), 400
+    
+    product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
+    if not product:
+        return jsonify(message="product not found"), 404
+    
+    # Update fields if they are provided in the request
+    for key, value in data.items():
+        if hasattr(product, key):
+            setattr(product, key, value)
+    
+    db.session.commit()
+    return jsonify(message="product updated")
 
 # route to handle the deletion of a product 
+@session_required
+@api_v1_products.route("/delete", methods=["POST"])
+def get_delete_product():
+    """  DELETE A PRODUCT """  
+    product_id = request.args.get("id")
+    if not product_id:
+        return jsonify(message="product id is required"), 400
+    
+    product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
+    if not product:
+        return jsonify(message="product not found"), 404
+    
+    db.session.delete(product)
+    db.session.commit()
+    return jsonify(message="product deleted")
+
+# route to handler the getting of one product
+@session_required
+@api_v1_products.route("/getBy", methods=[  "GET"])
+def get_by_product():
+    """ GET A PRODUCT   """  
+    product_id = request.args.get("id")
+    if not product_id:
+        return jsonify(message="product id is required"), 400
+    
+    product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
+    if not product:
+        return jsonify(message="product not found"), 404
+    
+    return jsonify(product=product.to_dict())
+    
+     
