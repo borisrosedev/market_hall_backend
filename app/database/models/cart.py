@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy import Integer, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from .. import db 
+from .. import db
 
 class Cart(db.Model):
     """ A class that represents the User Cart"""
@@ -34,9 +34,8 @@ class Cart(db.Model):
     created_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), nullable=False)
     updated_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-
-
     def to_dict(self) -> dict:
+        """ serialize the cart record"""
         return {
         "id": self.id,
         "user_id": self.user_id,

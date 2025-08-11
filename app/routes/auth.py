@@ -5,7 +5,6 @@ from ..database.models import User
 
 api_v1_auth = Blueprint("api_v1_auth", __name__, url_prefix="/api/v1/auth")
 
-
 @api_v1_auth.route('/login', methods=["POST"])
 @json_required_with_keys('email', 'password')
 def login():
@@ -15,8 +14,11 @@ def login():
     password = data.get('password')
 
     user = db.session.execute(db.select(User).filter_by(email=email)).scalar()
-
     if not user:
+        return jsonify(message="invalid data")
+    
+    is_valid_password = user.check_password(password)
+    if not is_valid_password:
         return jsonify(message="invalid data")
     
     session["email"] = user.email

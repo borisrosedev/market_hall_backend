@@ -27,8 +27,7 @@ class User(db.Model):
         back_populates="user",
         uselist=False,
         cascade="all, delete-orphan",
-        single_parent=True, 
-        passive_deletes=True,
+        single_parent=True
     )
     created_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), nullable=False)
     updated_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
