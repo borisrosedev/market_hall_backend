@@ -19,7 +19,8 @@ def login():
     if not user:
         return jsonify(message="invalid data")
     
-    session["email"] = user.email 
+    session["email"] = user.email
+    session["user_id"] = user.id
     session["role"] = user.role.value
     session.permanent = True
 

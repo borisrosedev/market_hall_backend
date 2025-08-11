@@ -3,7 +3,7 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
-from .routes import api_v1_users, api_v1_auth
+from .routes import api_v1_users, api_v1_auth, api_v1_cart, api_v1_products
 
 from .database import db
 
@@ -17,9 +17,11 @@ def create_app():
     CORS(app, supports_credentials=True)
     app.register_blueprint(api_v1_users)
     app.register_blueprint(api_v1_auth)
+    app.register_blueprint(api_v1_products)
+    app.register_blueprint(api_v1_cart)
     db.init_app(app)
     with app.app_context():
-        from .database.models import User
+        from .database.models import User,Cart,CartProduct,Product
         db.create_all()
 
 
