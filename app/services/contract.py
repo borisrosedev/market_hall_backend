@@ -4,6 +4,16 @@ from flask import request, jsonify
 
 EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
+# Decorators 
+def multipart_form_required(f):
+    pass
+
+def file_required(f):
+    pass
+
+def image_required(f):
+    pass
+
 
 def json_required(f):
     """ checks if the request body is valid JSON """
@@ -20,6 +30,12 @@ def json_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
+# Decorators's Fabrics
+
+
+def file_required_with_specific_extensions(*required_keys):
+    pass
 
 def json_required_with_keys(*required_keys):
     """ verify if required keys are in the JSON """

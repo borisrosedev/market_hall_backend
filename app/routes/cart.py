@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, session
 from ..services import session_required
 from ..database import db
 from ..database.models import Cart
@@ -18,7 +18,7 @@ def get_current_user_cart():
     """ Get the current user cart """ 
     cart = db.session.execute(db.select(Cart).filter_by(user_id=session["user_id"])).scalar()
     if not cart:
-        return jsonify(message="invalid data")
+        return jsonify(message="invalid data"), 400
     return jsonify(cart=cart.to_dict())
 
 
