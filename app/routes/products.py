@@ -2,8 +2,7 @@ import logging
 
 from flask import Blueprint, request, jsonify, session
 from ..database import db 
-from ..services import admin_required_with_exceptions
-from ..services import json_required_with_validation, session_required
+from ..services import json_required_with_validation, session_required, admin_required_with_exceptions
 api_v1_products = Blueprint("api_v1_products", __name__,url_prefix="/api/v1/products")
 
 logging.basicConfig(level=logging.DEBUG)

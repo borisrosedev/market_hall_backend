@@ -3,7 +3,7 @@ import logging
 from flask import Blueprint, request, jsonify, session
 from ..database import db 
 from ..services import admin_required_with_exceptions
-from ..database.models import User
+from ..database.models import User, Cart
 from ..services import json_required_with_validation, session_required
 api_v1_users = Blueprint("api_v1_users", __name__,url_prefix="/api/v1/users")
 
@@ -41,7 +41,10 @@ def get_all_or_create_user():
         
         user = User(firstname=firstname, lastname=lastname, email=email)
         user.password = password
+        user.cart = Cart() 
         db.session.add(user)
+
         db.session.commit()
-        return jsonify(message="user created")
+       
+        return jsonify(message="user created with a cart")
     
