@@ -15,23 +15,17 @@ logging.basicConfig(level=logging.DEBUG)
 
 # route to handle the create of a new product  
 # route to handle the getting of all products
-# @session_required
+@session_required
 @api_v1_products.route("/", methods=["POST", "GET"])
 def get_all_or_create_product():
     """ GET ALL PRODUCTS OR CREATE A PRODUCT """     
     
     if request.method == "GET":
-        products = db.session.execute(db.select(Product)).scalars().all()     
-        #prd = db.select(Product)
-        #products = db.session.execute(prd).scalars() 
-        #products = db.session.execute(db.select(Product).order_by(Product.id)).scalars()
+        products = db.session.execute(db.select(Product)).scalars().all()      
         return jsonify(products=[product.to_dict() for product in products])
     else:
         
-        data = request.get_json()
-        #id =  data.get('id')
-
-        
+        data = request.get_json() 
         required_fields = ['description', 'name', 'photo_name', 'price', 'quantity']
         for field in required_fields:
             if not data.get(field):
@@ -42,20 +36,7 @@ def get_all_or_create_product():
         name= data.get('name')
         photo_name= data.get('photo_name')
         price= data.get('price') 
-        quantity= data.get('quantity')
-        #created_at= data.get('created_at')
-        #updated_at= data.get('updated_at')
-
-        ##try:
-        #    ex_product = db.session.execute(db.select(Product).filter_by(id=id)).scalar()
-        #    if ex_product:
-        #        return jsonify(message="invalid data"), 400
-        #except Exception as e:
-        #    logging.error(f"Error checking existing product: {e}")  
-        #    return jsonify(message="error checking existing product"), 500
-
-        
-        
+        quantity= data.get('quantity') 
         
         try :
 
@@ -83,13 +64,10 @@ def get_all_or_create_product():
 
 # route to  handle the update of a product 
 @session_required
-@api_v1_products.route("/update", methods=["POST"])
-def update_product():   
+@api_v1_products.route("/update/<int:product_id>", methods=["PUT"])
+def update_product(product_id):   
     """ UPDATE A PRODUCT """  
     data = request.get_json()
-    product_id = data.get("id")
-    if not product_id:
-        return jsonify(message="product id is required"), 400
     
     product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
     if not product:
@@ -105,13 +83,9 @@ def update_product():
 
 # route to handle the deletion of a product 
 @session_required
-@api_v1_products.route("/delete", methods=["POST"])
-def get_delete_product():
+@api_v1_products.route("/delete/<int:product_id>", methods=["DELETE"])
+def get_delete_product(product_id):
     """  DELETE A PRODUCT """  
-    product_id = request.args.get("id")
-    if not product_id:
-        return jsonify(message="product id is required"), 400
-    
     product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
     if not product:
         return jsonify(message="product not found"), 404
@@ -122,13 +96,9 @@ def get_delete_product():
 
 # route to handler the getting of one product
 @session_required
-@api_v1_products.route("/getBy", methods=[  "GET"])
-def get_by_product():
-    """ GET A PRODUCT   """  
-    product_id = request.args.get("id")
-    if not product_id:
-        return jsonify(message="product id is required"), 400
-    
+@api_v1_products.route("/getBy/<int:product_id>", methods=[  "GET"])
+def get_by_product(product_id):
+    """ GET A PRODUCT   """   
     product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
     if not product:
         return jsonify(message="product not found"), 404
