@@ -21,7 +21,7 @@ class Tag(db.Model):
     def to_dict(self) -> dict:
         return {
             "id": self.id,
-            "name": self.name,  # ✅ pas self.user_id
+            "name": self.name,  
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "products_link": [

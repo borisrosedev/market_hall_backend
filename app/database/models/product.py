@@ -3,7 +3,6 @@ from typing import List
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .. import db
-# Optionnel : proxy pour accéder directement aux Tag
 from sqlalchemy.ext.associationproxy import association_proxy
 
 class Product(db.Model):

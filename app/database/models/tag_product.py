@@ -15,7 +15,6 @@ class TagProduct(db.Model):
         primary_key=True,
     )
 
-    # ✅ back_populates appariés aux noms ci-dessus
     tag: Mapped["Tag"] = relationship(back_populates="products_link")
     product: Mapped["Product"] = relationship(back_populates="tag_links")
 
