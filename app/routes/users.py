@@ -17,7 +17,7 @@ def me():
     """ GET THE CURRENT USER DATA """
     user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
     if not user:
-       return jsonify(message="invalid data")
+       return jsonify(message="invalid data"), 400
     return jsonify(user=user.to_dict())
 
 
@@ -48,11 +48,10 @@ def update_get_or_delete_user(user_id):
             if not user:
                 return jsonify(message="invalid data"), 400
             return jsonify(user=user.to_dict())
-        else:
-            user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-            if not user:
-                return jsonify(message="invalid data"), 400
-            return jsonify(user=user.to_dict())
+        user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        if not user:
+            return jsonify(message="invalid data"), 400
+        return jsonify(user=user.to_dict())
     else:
         if "role" in session and session["role"] == "admin":
             user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
@@ -92,10 +91,9 @@ def get_all_or_create_user():
         
         user = User(firstname=firstname, lastname=lastname, email=email)
         user.password = password
-        user.cart = Cart() 
+        user.cart = Cart()
         db.session.add(user)
-
         db.session.commit()
        
-        return jsonify(message="user created with a cart")
+        return jsonify(message="user created with a cart"), 202
     
