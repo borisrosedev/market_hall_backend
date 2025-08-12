@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, jsonify, session, send_from_directory
-from ..services import session_required
+from ..services import session_required,file_required 
 from ..database import db
 from ..database.models import User
 
@@ -25,6 +25,7 @@ def download_file(filename: str):
 
 @static_files.route('/upload', methods=['POST'])
 @session_required
+@file_required
 def upload_file():
     """ uploads a file (-> server) """
     if request.method == 'POST':

@@ -67,12 +67,20 @@ function test_create_product_botticelli(){
     -F "file=@./la_nascita_di_Venere.gif"
 }
 
+function test_file (){
+    curl -X POST http://localhost:5000/static/files/upload/ \
+    -H "Content-Type: multipart/form-data" \
+    -F "file=@./monalisa.png"
+}
+
 #test_post
 #test_get_all_product 
 # test_get_ById_product
 # test_update_product
 
-test_create_product_daVinci
-test_create_product_vermeer
-test_create_product_botticelli
+#test_create_product_daVinci
+#test_create_product_vermeer
+#test_create_product_botticelli
+test_file 
+ 
 
