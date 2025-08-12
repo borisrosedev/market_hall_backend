@@ -45,9 +45,21 @@ function test_create_product(){
 }
 
 
+function test_create_product_vermeer(){
+    curl -X POST http://localhost:5000/api/v1/products/ \
+    -H "Content-Type: multipart/form-data" \
+    -F "name=La Jeune Fille à la perle" \
+    -F "description=Artist Johannes Vermeer" \
+    -F "price=1540000" \
+    -F "tags=painting,art" \
+    -F "quantity=1" \
+    -F "file=@./la-jeune-fille-a-perle.jpg"
+}
+
 #test_post
 #test_get_all_product 
 # test_get_ById_product
 # test_update_product
 
-test_create_product
+#test_create_product
+test_create_product_vermeer
