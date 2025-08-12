@@ -1,4 +1,5 @@
 from typing import List
+from datetime import datetime, timezone
 from sqlalchemy import Integer, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .. import db
@@ -18,7 +19,6 @@ class Cart(db.Model):
     # cart will be a virtual field when querying a user 
     user: Mapped["User"] = relationship(back_populates="cart")
 
-
     items: Mapped[List["CartProduct"]] = relationship(
         back_populates="cart",
         cascade="all, delete-orphan",
@@ -31,8 +31,8 @@ class Cart(db.Model):
         lazy="dynamic",
     )
 
-    created_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), nullable=False)
-    updated_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     def to_dict(self) -> dict:
         """ serialize the cart record"""
@@ -51,7 +51,6 @@ class Cart(db.Model):
             for it in self.items
         ],
     }
-
 
 
     def __repr__(self) -> str:
