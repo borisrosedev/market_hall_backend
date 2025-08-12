@@ -69,6 +69,18 @@ def file_required(f):
     
     return decorated_function
 
+def deco_test(f): 
+    """ test """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        test_info_request(request)
+         
+        return f(*args, **kwargs)
+    
+    return decorated_function
+
+
+
 def image_required(f):
     """ image type file is required """
     pass
