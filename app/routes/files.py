@@ -24,9 +24,9 @@ def download_file(filename: str):
 
 
 @static_files.route('/upload', methods=['POST'])
-#@session_required
-#@multipart_form_required
-#@file_required 
+@session_required
+@multipart_form_required
+@file_required 
 @image_required
 def upload_file():
     """ uploads a file (-> server) """
