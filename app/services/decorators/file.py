@@ -7,9 +7,23 @@ import os
 import re
 from flask import request, jsonify
 
+from app.services.decorators.info import test_info_request
+
 # Decorators 
 def multipart_form_required(f):
-    pass
+    """ multipart required """ 
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        #test_info_request(request)
+         
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        name, ext = os.path.splitext(filename)
+        if name == '' or ext == '':
+            return jsonify(message="part file missing"), 400
+        return f(*args, **kwargs )
+    return decorated_function
+
 
 def file_required(f): 
     """ image file is required """
