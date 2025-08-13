@@ -1,5 +1,6 @@
 from flask import session, Blueprint, jsonify, request
-from ..services import session_required, json_required_with_keys
+from ..services import session_required
+from ..services.factories import   json_required_with_keys
 from ..database import db 
 from ..database.models import User
 
