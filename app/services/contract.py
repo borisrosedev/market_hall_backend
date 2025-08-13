@@ -58,27 +58,12 @@ def file_required(f):
     """ image file is required """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        test_info_request(request)
-        if request.method == "GET":
-            return f(*args, **kwargs)
-        file = request.files['file']
-        filename = secure_filename(file.filename)
-        if not os.path.exists(filename):
-            return jsonify(message="invalid file"), 400
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                return jsonify(message="file missing"), 400
         return f(*args, **kwargs)
     
     return decorated_function
-
-def deco_test(f): 
-    """ test """
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        test_info_request(request)
-         
-        return f(*args, **kwargs)
-    
-    return decorated_function
-
 
 
 def image_required(f):

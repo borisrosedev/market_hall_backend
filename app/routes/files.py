@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, jsonify, session, send_from_directory
-from ..services import session_required,file_required ,deco_test
+from ..services import session_required,file_required 
 from ..database import db
 from ..database.models import User
 
@@ -18,7 +18,6 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @static_files.route('/<filename>', methods=["GET"])
-@deco_test
 def download_file(filename: str):
     """ download a file (-> client) """
     return send_from_directory(UPLOAD_FOLDER, filename)
@@ -30,8 +29,8 @@ def download_file(filename: str):
 def upload_file():
     """ uploads a file (-> server) """
     if request.method == 'POST':
-        if 'file' not in request.files:
-            return jsonify(message="file missing"), 400
+        #if 'file' not in request.files:
+        #    return jsonify(message="file missing"), 400
         file = request.files['file']
         if file.filename == '':
             return jsonify(message="no selected file"), 400

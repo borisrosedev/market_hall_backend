@@ -1,2 +1,2 @@
 from .auth import session_required, admin_required, admin_required_with_exceptions
-from .contract import json_required, json_required_with_keys, json_required_with_validation, multipart_form_data_with_specific_extension_file_and_keys, unique_filename_required,multipart_form_required,file_required,deco_test
+from .contract import json_required, json_required_with_keys, json_required_with_validation, multipart_form_data_with_specific_extension_file_and_keys, unique_filename_required,multipart_form_required,file_required
