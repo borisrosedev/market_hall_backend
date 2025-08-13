@@ -71,8 +71,16 @@ function test_file_upload (){
     curl -X POST http://localhost:5000/static/files/upload \
     -F "file=@.\monalisa.png"
     
-    curl -X POST http://localhost:5000/static/files/upload
-    #  -F "file=@.\monalisa.png"
+    curl -X POST http://localhost:5000/static/files/upload  
+    #-F "file=@.\la_nascita_di_Venere.gif"
+}
+
+function test_file_upload_image_type (){
+    curl -X POST http://localhost:5000/static/files/upload \
+    -F "file=@.\monalisa.png"
+    
+    curl -X POST http://localhost:5000/static/files/upload \
+    -F "file=@.\la_nascita_di_Venere.gif"
 }
 
 #test_post
@@ -87,4 +95,5 @@ function test_file_upload (){
  
 
  
-test_file_upload
+# test_file_upload
+test_file_upload_image_type
