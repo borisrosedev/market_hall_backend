@@ -1,7 +1,6 @@
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy import Integer,String, ForeignKey, CheckConstraint, Index
+from sqlalchemy import ForeignKey, CheckConstraint, Index
 from .. import db
-
 
 
 class CartProduct(db.Model):
@@ -12,12 +11,13 @@ class CartProduct(db.Model):
         ForeignKey("carts.id", ondelete="CASCADE"),
         primary_key=True,
     )
+
     product_id: Mapped[int] = mapped_column(
         ForeignKey("products.id", ondelete="CASCADE"),
         primary_key=True,
     )
-    quantity: Mapped[int] = mapped_column(default=1, nullable=False)
 
+    quantity: Mapped[int] = mapped_column(default=1, nullable=False)
     cart: Mapped["Cart"] = relationship(back_populates="items")
     product: Mapped["Product"] = relationship(back_populates="carts_link")
 

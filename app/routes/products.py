@@ -36,7 +36,6 @@ def get_all_or_create_product(unique_name:str):
     quantity= request.form.get('quantity')
     file = request.files["file"]
     file.save(os.path.join(UPLOAD_FOLDER, unique_name))
-    print("🎾 1")
     try:
         product = Product(
             description=description,
@@ -46,13 +45,10 @@ def get_all_or_create_product(unique_name:str):
             price=price,
             quantity=quantity,
         )
-
-        print("❌")
         for tag_name in tags.split(','):
             tag = Tag(name=tag_name.strip())
             tag_link = TagProduct(tag=tag)
             product.tag_links.append(tag_link)
-        print(product)
         db.session.add(product)
         db.session.commit()
         return jsonify(message="product created"), 202
@@ -82,7 +78,7 @@ def get_delete_product(product_id):
     """  DELETE A PRODUCT """  
     product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
     if not product:
-        return jsonify(message="product not found"), 404 
+        return jsonify(message="product not found"), 404
     db.session.delete(product)
     db.session.commit()
     return jsonify(message="product deleted")
@@ -95,5 +91,4 @@ def get_by_product(product_id):
     if not product:
         return jsonify(message="product not found"), 404
     return jsonify(product=product.to_dict())
-    
-     
+   
