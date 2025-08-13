@@ -2,7 +2,9 @@ import os
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, jsonify, session, send_from_directory
-from ..services import session_required,file_required ,file_required_with_specific_extensions,image_required,multipart_form_required
+from ..services import session_required
+from ..services.decorators import multipart_form_required,file_required,image_required, unique_filename_required
+
 from ..database import db
 from ..database.models import User
 
