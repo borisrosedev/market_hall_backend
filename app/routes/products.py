@@ -8,7 +8,8 @@ from ..database import db
 from ..database.models import Product, Tag, TagProduct
 from werkzeug.utils import secure_filename
 from ..services import session_required
-from ..services.factories import multipart_form_data_with_specific_extension_file_and_keys, unique_filename_required
+from ..services.factories import multipart_form_data_with_specific_extension_file_and_keys
+from ..services.decorators import unique_filename_required
 
 
 UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
