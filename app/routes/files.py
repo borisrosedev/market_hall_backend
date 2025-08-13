@@ -33,8 +33,8 @@ def download_file(filename: str):
 def upload_file():
     """ uploads a file (-> server) """
     if request.method == 'POST':
-        #if 'file' not in request.files:
-        #    return jsonify(message="file missing"), 400
+        if 'file' not in request.files:
+            return jsonify(message="file missing"), 400
         file = request.files['file']
         if file.filename == '':
             return jsonify(message="no selected file"), 400
