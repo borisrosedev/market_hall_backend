@@ -66,14 +66,21 @@ function test_create_product_botticelli(){
     -F "quantity=1" \
     -F "file=@./la_nascita_di_Venere.gif"
 }
-
-function test_for_understand(){
-    curl -X GET http://localhost:5000/static/files/la_nascita_di_Venere-20250812-115630-1f2e7ac828ae4d9d884bc4f480b44aa9.gif
+ 
+function test_file_upload (){
+    curl -X POST http://localhost:5000/static/files/upload \
+    -F "file=@.\monalisa.png"
+    
+    curl -X POST http://localhost:5000/static/files/upload  
+    #-F "file=@.\la_nascita_di_Venere.gif"
 }
 
-function test_file (){
-    curl -X POST http://localhost:5000/static/files// \ 
-    -F "file=@.\upload/monalisa.png"
+function test_file_upload_image_type (){
+    curl -X POST http://localhost:5000/static/files/upload \
+    -F "file=@.\monalisa.png"
+    
+    curl -X POST http://localhost:5000/static/files/upload \
+    -F "file=@.\la_nascita_di_Venere.gif"
 }
 
 #test_post
@@ -84,8 +91,9 @@ function test_file (){
 #test_create_product_daVinci
 #test_create_product_vermeer
 #test_create_product_botticelli
-#test_file 
+# 
  
 
-
-test_for_understand
+ 
+# test_file_upload
+test_file_upload_image_type
