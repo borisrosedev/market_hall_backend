@@ -3,16 +3,16 @@ from ..services import session_required
 from ..database import db
 from ..database.models import Cart
 
-api_v1_cart = Blueprint("api_v1_cart", __name__, url_prefix="/api/v1/carts")
+api_v1_carts = Blueprint("api_v1_cart", __name__, url_prefix="/api/v1/carts")
 
 
-@api_v1_cart.route("/", methods=["GET"])
+@api_v1_carts.route("/", methods=["GET"])
 def get_all_carts():
     carts = db.session.execute(db.select(Cart).order_by(Cart.id)).scalars()
     return jsonify(carts = [cart.to_dict() for cart in carts])
 
 
-@api_v1_cart.route("/me", methods=["GET"])
+@api_v1_carts.route("/me", methods=["GET"])
 @session_required
 def get_current_user_cart():
     """ Get the current user cart """ 
@@ -22,7 +22,7 @@ def get_current_user_cart():
     return jsonify(cart=cart.to_dict())
 
 
-@api_v1_cart.route("/items", methods=["POST"])
+@api_v1_carts.route("/items", methods=["POST"])
 @session_required
 def add_cart_item():
    return jsonify(message="cart item added")

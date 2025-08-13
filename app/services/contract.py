@@ -116,9 +116,7 @@ def unique_filename_required(f):
     return decorated_function
 
 
-# Decorators's Fabrics
-
-
+# Decorators's Factory
 
 
 def file_required_with_specific_extensions(*required_keys):
@@ -133,9 +131,6 @@ def multipart_form_data_with_specific_extension_file_and_keys(files_extensions: 
             data = request.form 
             if not data:
                 return jsonify(message="multipart form data required"), 400
-            print("✅")
-            print(data)
-            print("---")
             missing_keys = [key for key in required_keys if key not in data.keys()]
             if missing_keys:
                 return jsonify(message=f"Keys missing in multipart-form-data : {', '.join(missing_keys)}"), 400
@@ -147,7 +142,6 @@ def multipart_form_data_with_specific_extension_file_and_keys(files_extensions: 
             ext = file.filename.rsplit('.', 1)[-1].lower()
             if ext not in files_extensions:
                 return jsonify(message="file extension not allowed"), 400
-            print("here❤️")
             return f(*args, **kwargs)
         return decorated_function
     return decorator

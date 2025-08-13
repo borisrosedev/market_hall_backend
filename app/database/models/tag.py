@@ -1,5 +1,6 @@
 # models/tag.py
 from typing import List
+from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .. import db
@@ -9,8 +10,8 @@ class Tag(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    created_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), nullable=False)
-    updated_at: Mapped[str] = mapped_column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     products_link: Mapped[List["TagProduct"]] = relationship(
         back_populates="tag",
