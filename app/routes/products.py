@@ -9,7 +9,7 @@ from ..database.models import Product, Tag, TagProduct
 from werkzeug.utils import secure_filename
 from ..services import session_required
 from ..services.factories import multipart_form_data_with_specific_extension_file_and_keys
-from ..services.decorators import unique_filename_required
+from ..services.decorators import unique_filename_required,test_info_request
 
 
 UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
@@ -24,12 +24,12 @@ logging.basicConfig(level=logging.DEBUG)
     ["description", "name","price", "quantity", "tags"]
 )
 @unique_filename_required
-def get_all_or_create_product(unique_name:str):
+def get_all_or_create_product(unique_name:str= None):
     """ GET ALL PRODUCTS OR CREATE A PRODUCT """      
     if request.method == "GET":
         products = db.session.execute(db.select(Product)).scalars()     
         return jsonify(products=[product.to_dict() for product in products])
-    description = request.form.get('description')
+    description = request.form.get('description') 
     name = request.form.get('name')
     is_available= request.form.get('is_available') if request.form.get('is_available') else True
     price= request.form.get('price')
@@ -37,10 +37,12 @@ def get_all_or_create_product(unique_name:str):
     quantity= request.form.get('quantity')
     file = request.files["file"]
     file.save(os.path.join(UPLOAD_FOLDER, unique_name))
+
+    test_info_request(request)
     try:
         product = Product(
             description=description,
-            is_available=is_available,
+            is_available=is_available, 
             name=name,
             photo_name=unique_name,
             price=price,
