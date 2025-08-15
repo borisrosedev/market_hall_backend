@@ -4,7 +4,9 @@ from flask import Blueprint, request, jsonify, session
 from ..database import db 
 from ..services import admin_required_with_exceptions
 from ..database.models import User, Cart
-from ..services import json_required_with_validation, session_required
+from ..services import session_required
+from ..services.factories import json_required_with_validation
+
 api_v1_users = Blueprint("api_v1_users", __name__,url_prefix="/api/v1/users")
 
 logging.basicConfig(level=logging.DEBUG)

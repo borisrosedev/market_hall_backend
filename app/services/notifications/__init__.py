@@ -1,25 +1,9 @@
 import json
 import sqlalchemy as sa
-from ..database import db
-from ..database.models import User, Notification, NotificationStatus
-from .sse import _format_sse
-from .stream import _user_streams, _lock
-
-
-# Helpers d’envoi
-def push_to_user(user_id: int, event: str, data: dict) -> None:
-    msg = _format_sse(event, data)
-    with _lock:
-        for q in _user_streams.get(user_id, ()):
-            q.put(msg)
-
-def push_to_all(event: str, data: dict) -> None:
-    msg = _format_sse(event, data)
-    with _lock:
-        for queues in _user_streams.values():
-            for q in queues:
-                q.put(msg)
-
+from ...database import db
+from ...database.models import User, Notification, NotificationStatus
+from .utils import _format_sse
+from .helpers import push_to_all, push_to_user, event_stream, _lock, _user_streams
 
 
 def notify_all_users_product_published(product) -> None:
