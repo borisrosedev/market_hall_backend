@@ -51,7 +51,7 @@ def get_all_or_create_product(unique_name:str):
             product.tag_links.append(tag_link)
         db.session.add(product)
         db.session.commit()
-        return jsonify(message="product created"), 202
+        return jsonify(message="product created"), 201
     except Exception as e:
         logging.error("Error adding product: %s", e)
         db.session.rollback()

@@ -1,6 +1,8 @@
 # notifications_sse.py
 from __future__ import annotations
-import queue, threading, time
+import queue
+import threading
+import time
 from typing import Dict, Set
 
 # Map user_id -> Set[Queue[str]]

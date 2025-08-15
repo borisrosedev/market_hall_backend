@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from flask import Blueprint, request, jsonify, session, send_from_directory
-from ..services import session_required,file_required ,deco_test
+from ..services import session_required,file_required ,deco_test, unique_filename_required
 from ..database import db
 from ..database.models import User
 
@@ -26,21 +26,14 @@ def download_file(filename: str):
 
 @static_files.route('/upload', methods=['POST'])
 @session_required
-@file_required
-def upload_file():
+@unique_filename_required
+def upload_file(unique_name):
     """ uploads a file (-> server) """
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return jsonify(message="file missing"), 400
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify(message="no selected file"), 400
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
-            if "role" in session and (session["role"] == "user" or session["role"] == "premium"):
-                user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-                user.photo_name = filename
-                db.session.commit()
-            return jsonify(message="file saved"), 202
-        return jsonify(message="invalid data"), 400
+    file = request.files['file']
+    file.save(os.path.join(UPLOAD_FOLDER, unique_name))
+    if "role" in session and (session["role"] == "user" or session["role"] == "premium"):
+        user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        user.photo_name = unique_name
+        db.session.commit()
+        return jsonify(message="file saved"), 200
+    return jsonify(message="invalid data"), 400
