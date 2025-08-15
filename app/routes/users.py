@@ -97,5 +97,5 @@ def get_all_or_create_user():
         db.session.add(user)
         db.session.commit()
        
-        return jsonify(message="user created with a cart"), 202
+        return jsonify(message="user created with a cart"), 201
     

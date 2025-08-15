@@ -10,30 +10,35 @@ from flask import request, jsonify
 from app.services.decorators.info import test_info_request
 
 # Decorators 
-def multipart_form_required(f):
-    """ multipart required """ 
+from functools import wraps
+from flask import request, jsonify
+from werkzeug.utils import secure_filename
+import os
+
+
+def multipart_form_data_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        #test_info_request(request)
-         
-        file = request.files['file']
-        filename = secure_filename(file.filename)
-        name, ext = os.path.splitext(filename)
-        if name == '' or ext == '':
-            return jsonify(message="part file missing"), 400
-        return f(*args, **kwargs )
+        ctype = request.headers.get("Content-Type", "")
+        if "multipart/form-data" not in ctype:
+            return jsonify(message="Content-Type must be multipart/form-data"), 400
+        return f(*args, **kwargs)
     return decorated_function
 
 
-def file_required(f): 
-    """ image file is required """
+
+def file_required(f):
+    """ file is required """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if request.method == 'POST':
             if 'file' not in request.files:
                 return jsonify(message="file missing"), 400
-        return f(*args, **kwargs)
-    
+            filename = secure_filename(request.files['file'].filename)
+            name, ext = os.path.splitext(filename)
+            if name == '' or ext == '':
+                return jsonify(message="part file missing"), 400
+        return f(*args, **kwargs) 
     return decorated_function
 
 
@@ -41,21 +46,18 @@ def image_required(f):
     """ image type file is required """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        #test_info_request(request)
         file = request.files['file']
         filename = secure_filename(file.filename)
-        name, ext = os.path.splitext(filename)
-        
-        ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'}
-        if ext.replace('.','') not in ALLOWED_EXTENSIONS:
-            return jsonify(message="invalid type file "), 400 
-        
-        return f(*args, **kwargs)
-    
+        _ , ext = os.path.splitext(filename)     
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+        if ext.replace('.','') not in allowed_extensions:
+            return jsonify(message="invalid type file "), 400
+        return f(*args, **kwargs) 
     return decorated_function
 
 
 def unique_filename_required(f):
+    """ makes sure the file will have a unique name afterwards"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if request.method == "GET":
