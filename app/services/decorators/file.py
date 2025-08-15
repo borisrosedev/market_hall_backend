@@ -1,19 +1,14 @@
+import os
+import re
 from functools import wraps
 import uuid
 from datetime import datetime as dt
 from pathlib import Path 
 from werkzeug.utils import secure_filename
-import os
-import re
 from flask import request, jsonify
-
 from app.services.decorators.info import test_info_request
 
-# Decorators 
-from functools import wraps
-from flask import request, jsonify
-from werkzeug.utils import secure_filename
-import os
+# Decorators
 
 
 def multipart_form_data_required(f):
@@ -24,7 +19,6 @@ def multipart_form_data_required(f):
             return jsonify(message="Content-Type must be multipart/form-data"), 400
         return f(*args, **kwargs)
     return decorated_function
-
 
 
 def file_required(f):
@@ -38,7 +32,7 @@ def file_required(f):
             name, ext = os.path.splitext(filename)
             if name == '' or ext == '':
                 return jsonify(message="part file missing"), 400
-        return f(*args, **kwargs) 
+        return f(*args, **kwargs)
     return decorated_function
 
 
@@ -52,7 +46,7 @@ def image_required(f):
         allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
         if ext.replace('.','') not in allowed_extensions:
             return jsonify(message="invalid type file "), 400
-        return f(*args, **kwargs) 
+        return f(*args, **kwargs)
     return decorated_function
 
 
@@ -60,9 +54,11 @@ def unique_filename_required(f):
     """ makes sure the file will have a unique name afterwards"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if request.method == "GET":
+        if request.method in ("GET", "DELETE"):
             return f(*args, **kwargs)
         file = request.files['file']
+        if not file:
+            return f(*args, **kwargs)
         filename = secure_filename(file.filename)
         name, ext = os.path.splitext(filename)
         unique_id = uuid.uuid4().hex

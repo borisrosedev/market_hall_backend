@@ -4,7 +4,6 @@ BASE_DIR="$(dirname "$0")"
 source "$BASE_DIR/constants/colors.sh"
 
 
-
 show_menu(){
 echo -e "${CYAN}=== API Test Menu ===${NO_COLOR}"
 echo "1) Products"

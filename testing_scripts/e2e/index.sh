@@ -7,19 +7,19 @@ source "$BASE_DIR/../utils/curl_utils.sh"
 
 
 
-
 show_menu(){
+  echo -e "${CYAN}=== END TO END Test Menu ===${NO_COLOR}"
+  echo "1) Users"
+  echo "2) Admins"
+  echo "3) Quit"
+  read -p "Choose an option: " e2e_choice
 
-echo -e "${CYAN}=== END TO END Test Menu ===${NO_COLOR}"
-echo "1) Users"
-echo "2) Quit"
-read -p "Choose an option: " e2e_choice
-
-case "$e2e_choice" in
-    1) "$BASE_DIR/users_flows.sh" ;;
-    2) echo "Bye!"; exit 0 ;;
-    *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
-esac
+  case "$e2e_choice" in
+      1) "$BASE_DIR/users_flows.sh" ;;
+      2) "$BASE_DIR/admins_flows.sh" ;;
+      3) echo "Bye!"; exit 0 ;;
+      *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
+  esac
 }
 
 

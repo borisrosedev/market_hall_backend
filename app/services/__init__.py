@@ -1,3 +1,3 @@
-from .decorators import session_required, multipart_form_data_required, file_required, image_required, unique_filename_required, admin_required, admin_required_with_exceptions
+from .decorators import session_required, multipart_form_data_required, file_required, image_required, unique_filename_required, admin_required, admin_required_with_exceptions, test_info_request
 from .factories import multipart_form_data_with_specific_extension_file_and_keys, multipart_form_data_with_specific_extension_file
 from .notifications import notify_all_users_product_published, _lock,_user_streams, event_stream, push_to_all, push_to_user

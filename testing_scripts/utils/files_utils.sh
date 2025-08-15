@@ -6,7 +6,7 @@ find_file() {
     local search_term="$2"
 
     if [ -z "$search_term" ]; then
-        echo "❌ Usage: find_adjacent_file <mot_à_chercher>"
+        echo "❌ Usage: find_file <folder> <patterns>"
         return 1
     fi
 
