@@ -29,7 +29,7 @@ def upload_file(unique_name):
     """ uploads a file (-> server) """
     file = request.files['file']
     file.save(os.path.join(UPLOAD_FOLDER, unique_name))
-    if "role" in session and (session["role"] == "user" or session["role"] == "premium"):
+    if "role" in session and (session["role"] == "user" or session["role"] == "premium" or session["role"] == "admin"):
         user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
         user.photo_name = unique_name
         db.session.commit()

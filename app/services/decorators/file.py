@@ -25,7 +25,9 @@ def file_required(f):
     """ file is required """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if request.method == 'POST':
+        if request.is_json:
+            return f(*args, **kwargs)
+        if request.method in ('POST','PUT','PATCH'):
             if 'file' not in request.files:
                 return jsonify(message="file missing"), 400
             filename = secure_filename(request.files['file'].filename)
@@ -40,6 +42,9 @@ def image_required(f):
     """ image type file is required """
     @wraps(f)
     def decorated_function(*args, **kwargs):
+
+        if request.is_json:
+            return f(*args, **kwargs)
         file = request.files['file']
         filename = secure_filename(file.filename)
         _ , ext = os.path.splitext(filename)     
@@ -55,6 +60,8 @@ def unique_filename_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if request.method in ("GET", "DELETE"):
+            return f(*args, **kwargs)
+        if request.is_json:
             return f(*args, **kwargs)
         file = request.files['file']
         if not file:

@@ -74,6 +74,7 @@ class User(db.Model):
             "email": self.email,
             "is_banned": self.is_banned,
             "role": self.role.value,
+            "photo_name": self.photo_name,
             "fullname": self.get_fullname(),
             "created_at": self.created_at,
             "updated_at": self.updated_at,
