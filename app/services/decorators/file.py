@@ -42,8 +42,9 @@ def image_required(f):
     """ image type file is required """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-
         if request.is_json:
+            return f(*args, **kwargs)
+        if request.method in ("GET" , 'DELETE'):
             return f(*args, **kwargs)
         file = request.files['file']
         filename = secure_filename(file.filename)

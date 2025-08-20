@@ -195,7 +195,7 @@ function test_create_one_user {
         curl_with_code "http://localhost:5000/api/v1/users/" \
             -H "Content-Type:application/json" \
             -X POST \
-            -d "{\"firstname\":\"test_firstname\",\"lastname\":\"test_lastname\",\"email\":\"$email\",\"password\":\"caroline123\"}"
+            -d "{\"firstname\":\"Susie\",\"lastname\":\"Bernard\",\"email\":\"$email\",\"password\":\"caroline123\"}"
 
         if [[ "$http_code" -eq 201 ]]; then
             message=$(echo "$body" | jq -r '.message')
