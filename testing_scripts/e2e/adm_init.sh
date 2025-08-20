@@ -21,17 +21,13 @@ function test_create_login_store_cookie_get_me_create_get_update_product_get_upd
     sleep 2 
     test_create_vermeer_product_auto 
     sleep 2
-    #test_create_one_product_auto
-    #sleep 2
-    #test_get_one_product_auto
-    #sleep 2
-    #test_update_one_product_auto
-    #sleep 2
-    #test_get_one_product_auto
-    #sleep 2
+    test_create_botticelli_product_auto
+    sleep 2 
     test_create_one_not_admin_user_auto
     sleep 2
     test_get_all_users_as_admin
+    sleep 2
+    test_get_all_products
     sleep 2
     test_logout_and_remove_session_info
     echo -e "${YELLOW}🎉 Test e2e: End of the test ${NO_COLOR}"
