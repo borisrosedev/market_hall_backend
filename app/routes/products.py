@@ -1,13 +1,12 @@
 import logging
-import uuid
 import os
-from pathlib import Path 
+from pathlib import Path
 from flask import Blueprint, request, jsonify
-from ..database import db 
-from ..database.models import Product
-from ..services import multipart_form_data_with_specific_extension_file_and_keys, unique_filename_required,test_info_request, admin_required_with_exceptions
+from ..database import db
+from ..database.models import Product, Tag
+from ..services import multipart_form_data_with_specific_extension_file_and_keys, unique_filename_required,test_info_request, admin_required_with_exceptions, admin_required
 from .helpers import tags_helper
-
+from ..utils import delete_file_in_uploads_folder, to_bool, to_int, to_float
 
 UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
 
@@ -61,54 +60,94 @@ def get_all_delete_all_or_create_product(unique_name:str=None):
         return jsonify(message="error adding product"), 500
 
 
+@api_v1_products.route("/<int:product_id>/tags/<int:tag_id>", methods=["DELETE"])
+@admin_required
+def delete_one_product_tag(product_id, tag_id):
+    product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
+    if not product:
+        return jsonify(message="invalid product id"), 400
+
+    tag = db.session.execute(db.select(Tag).filter_by(id=tag_id)).scalar()
+    if not tag:
+        return jsonify(message="invalid tag id"), 400
+
+    if tag not in product.tags:
+        return jsonify(message=f"product {product_id} does not have tag {tag_id}"), 400
+
+    product.tags.remove(tag)
+    db.session.commit()
+
+    return jsonify(message="tag removed"), 200
 
 @api_v1_products.route("/<int:product_id>", methods=["DELETE", "GET", "PUT", "PATCH"])
 @admin_required_with_exceptions(True, "GET")
 @unique_filename_required
-def get_update_delete_one_product(product_id, unique_name:str=None):
-    if request.method in ("PUT", "PATCH"): 
-        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
+def get_update_delete_one_product(product_id, unique_name: str = None):
+    if request.method in ("PUT", "PATCH"):
+        product = db.session.execute(
+            db.select(Product).filter_by(id=product_id)
+        ).scalar_one_or_none()
         if not product:
             return jsonify(message="product not found"), 404
-        if unique_name:
-            product.photo_name = unique_name
-            file = request.files['file']
-            file.save(os.path.join(UPLOAD_FOLDER, unique_name))
 
-        description = request.form.get('description') 
-        name = request.form.get('name')
-        is_available= request.form.get('is_available') if request.form.get('is_available') else True
-        price= request.form.get('price')
-        tags = request.form.get('tags')
-        quantity= request.form.get('quantity')
-        
-        if description:
+
+        if request.is_json:
+            data = request.get_json()
+            description = data.get("description")
+            name = data.get("name")
+            is_available = data.get("is_available") if "is_available" in data else None
+            price = data.get("price")
+            tags = data.get("tags")
+            quantity = data.get("quantity")
+        else:
+            if unique_name:
+                if isinstance(product.photo_name, str):
+                    delete_file_in_uploads_folder(product.photo_name)
+                product.photo_name = unique_name
+                file = request.files["file"]
+                file.save(os.path.join(UPLOAD_FOLDER, unique_name))
+
+            description = request.form.get("description")
+            name = request.form.get("name")
+            is_available = request.form.get("is_available") if "is_available" in request.form else None
+            price = request.form.get("price")
+            tags = request.form.get("tags")
+            quantity = request.form.get("quantity")
+
+        if description is not None:
             product.description = description
-        if name: 
-            product.name = name 
-        if is_available:
-            product.is_available = is_available
-        if price:
-            product.price = price
-        if quantity:
-            product.quantity = quantity
-        if tags:
-            tags_helper(product=product,tags=tags)
+        if name is not None:
+            product.name = name
+        if is_available is not None:
+            val = to_bool(is_available)
+            if val is not None:
+                product.is_available = val
+        if price is not None:
+            val = to_float(price)
+            if val is not None:
+                product.price = val
+        if quantity is not None:
+            val = to_int(quantity)
+            if val is not None:
+                product.quantity = val
+        if tags is not None:
+            tags_helper(product=product, tags=tags)
 
         db.session.commit()
         return jsonify(message="product updated"), 200
 
-    if request.method == "GET": 
-        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
+    if request.method == "GET":
+        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar_one_or_none()
         if not product:
             return jsonify(message="product not found"), 404
         return jsonify(product=product.to_dict())
-    
+
     if request.method == "DELETE":
-        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
+        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar_one_or_none()
         if not product:
             return jsonify(message="product not found"), 404
+        if isinstance(product.photo_name, str):
+            delete_file_in_uploads_folder(product.photo_name)
         db.session.delete(product)
         db.session.commit()
         return jsonify(message="product deleted")
-

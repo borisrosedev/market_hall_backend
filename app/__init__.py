@@ -6,6 +6,17 @@ from flask import Flask
 from flask_cors import CORS
 from .routes import api_v1_users, api_v1_auth, api_v1_carts, api_v1_products, static_files, api_v1_notifications, api_v1_admin
 from .database import db
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import sqlite3
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    if isinstance(dbapi_connection, sqlite3.Connection):
+        cursor = dbapi_connection.cursor()
+        # 🚀 Activating foreign keys at the beginning
+        cursor.execute("PRAGMA foreign_keys=ON;")
+        cursor.close()
 
 
 def create_app():

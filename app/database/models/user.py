@@ -78,5 +78,6 @@ class User(db.Model):
             "fullname": self.get_fullname(),
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "cart_id": self.cart.id
 
         }
