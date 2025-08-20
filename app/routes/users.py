@@ -68,9 +68,13 @@ def update_get_or_delete_user(user_id,unique_name: str = None):
             if request.form.get('password'):
                 user.password = data.get("password")
             if session["role"] == "admin":
-                if "role" in data:
+                if  request.form.get('role'):
                     user.role = request.form.get('role')
+ 
             file = request.files['file']
+  
+            logging.info(file)
+
             file.save(os.path.join(UPLOAD_FOLDER, unique_name))
             user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
             user.photo_name = unique_name
