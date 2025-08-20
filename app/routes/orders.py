@@ -2,10 +2,10 @@ import logging
 import os
 from pathlib import Path
 from flask import Blueprint, request, jsonify, session
-#from ..database import db 
+from ..database import db 
 #from ..services import admin_required_with_exceptions
 from ..database.models import  Orders
-#from ..services import session_required, unique_filename_required, file_required, image_required 
+from ..services import test_info_request
 #from ..services.factories import json_required_with_validation
 #UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
 
@@ -98,26 +98,31 @@ def update_get_or_delete_order(): #user_id,unique_name: str = None):
 @api_v1_orders.route("/", methods=["POST", "GET"])
 def get_all_or_create_order():
     """ GET ALL ORDERS OR CREATE A ORDER """
-    #if request.method == "GET": 
-    #    orders = db.session.execute(db.select(Orders).order_by(Orders.id)).scalars()
-    #    return jsonify(orders=[order.to_dict() for order in orders])
-    #else:
-    """ 
-    data = request.get_json()
-    email =  data.get('email')
-    password = data.get('password')
-    firstname = data.get('firstname')
-    lastname = data.get('lastname')
+    if request.method == "GET": 
+        orders = db.session.execute(db.select(Orders).order_by(Orders.id)).scalars()
+        return jsonify(orders=[order.to_dict() for order in orders])
+    else: 
+        data = request.get_json()
+        user_id =  data.get('user_id')
+        amounts_cents =data.get('amounts_cents')
+        currency = data.get('currency')
+        status = data.get('status') 
+        test_info_request(request)
+        try:
+            order = Orders(
+                user_id=user_id,
+                amounts_cents= amounts_cents,
+                currency=currency, 
+                status=status, 
+            )
+           
+            db.session.add(order)
+            db.session.commit()
+            return jsonify(message="order created"), 201
+        except Exception as e:
+            logging.error("Error adding order: %s", e)
+            db.session.rollback()
+            return jsonify(message="error adding order"), 500
 
-    ex_user = db.session.execute(db.select(User).filter_by(email=email)).scalar()
-    if ex_user:
-        return jsonify(message="invalid data"), 400
-    
-    user = User(firstname=firstname, lastname=lastname, email=email)
-    user.password = password
-    user.cart = Cart()
-    db.session.add(user)
-    db.session.commit()
-    """
-    return jsonify(message="order created "), 201
+          
     

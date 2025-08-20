@@ -14,10 +14,10 @@ class StatusOrders(enum.Enum):
 class Orders(db.Model):
    
     __tablename__ = "orders"
-    id: Mapped[int] = mapped_column(primary_key=True) 
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
-        unique=True,          
+        unique=False,          
         index=True,
         nullable=False,
         ) 
@@ -30,6 +30,7 @@ class Orders(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "amounts_cents":self.amounts_cents,
             "currency": self.currency,
             "status": self.status, 
             "created_at": self.created_at,
