@@ -11,7 +11,8 @@ echo "2) Users"
 echo "3) Files"
 echo "4) Auth"
 echo "5) End To End"
-echo "6) Quit"
+echo "6) Store example for test admin"
+echo "7) Quit"
 read -p "Choose an option: " choice
 
 case "$choice" in
@@ -20,7 +21,8 @@ case "$choice" in
     3) "$BASE_DIR/tests/files.sh" ;;
     4) "$BASE_DIR/tests/auth.sh" ;;
     5) "$BASE_DIR/e2e/index.sh" ;;
-    6) echo "Bye!"; exit 0 ;;
+    6) "$BASE_DIR/e2e/adm_init.sh" ;;
+    7) echo "Bye!"; exit 0 ;;
     *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
 esac
 

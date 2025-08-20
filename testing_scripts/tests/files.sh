@@ -50,6 +50,7 @@ function test_download_file(){
 
 function test_upload_file_auto () {
     echo -e "${YELLOW}🚀 Test: upload a file (auto) ${NO_COLOR}"
+    echo -e "fichier image ${FILE_PATH}"
     curl_with_cookie_code http://localhost:5000/static/files/upload \
         -F "file=@${FILE_PATH};type=image/png" \
         -X POST 

@@ -117,7 +117,7 @@ function test_create_one_user_auto() {
             -H "Content-Type:application/json" \
             -X POST \
             -d "{\"firstname\":\"test_firstname\",\"lastname\":\"test_lastname\",\"email\":\"test@gmail.com\",\"password\":\"caroline123\"}"
-
+ 
     if [[ "$http_code" -eq 201 ]]; then
         message=$(echo "$body" | jq -r '.message')
         if [[ "$message" == "user created with a cart" ]]; then
@@ -173,7 +173,18 @@ function test_delete_one_user {
 }
 
 function test_create_admin {
+    
     test_create_one_user_auto
+
+    # Vérifiez la variable DB_PATH
+    echo $DB_PATH
+
+    # Testez la commande SQLite directement
+    echo "SELECT * FROM users WHERE email='test@gmail.com';" | sqlite3 "$DB_PATH"
+
+    # Testez votre commande UPDATE
+    echo "UPDATE users SET role='admin' WHERE email='test@gmail.com';" | sqlite3 "$DB_PATH"
+    echo "fin"
     echo -e "${YELLOW}🚀 Test: update role of test user to admin ${NO_COLOR}"
     if [ -f "$DB_PATH" ]; then
         echo -e "${GREEN}market_hall.db exists${NO_COLOR}"
