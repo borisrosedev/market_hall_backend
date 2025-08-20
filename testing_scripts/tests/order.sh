@@ -86,9 +86,49 @@ function test_create_one_order(){
 }
 
 function test_delete_order(){
-    exit 1     
+    echo -e "${YELLOW}🚀 Test: delete one order ${NO_COLOR}"
+    read -p "$(echo -e ${CYAN}Order ID:${NO_COLOR} ) " id
+     
+    if [ -n "$id" ]; then
+        curl_with_cookie_code http://localhost:5000/api/v1/orders/"$id"\
+            -H "Content-Type:application/json" \
+            -X DELETE
+
+        if [[ "$http_code" -eq 200 ]]; then
+            message=$(echo "$body" | jq -r '.message')
+            if [[ "$message" == "order deleted" ]]; then
+                echo -e "${GREEN}✅ Test passed (HTTP 200)${NO_COLOR}"
+            else
+                echo -e "${RED}❌ Unexpected message: '$message'${NO_COLOR}"
+                exit 1
+            fi
+        else
+            echo -e "${RED}❌ Failed (HTTP $http_code)${NO_COLOR}"
+            exit 1
+        fi
+    else
+        echo -e "${RED}❌ No id provided${NO_COLOR}"
+        exit 1
+    fi  
 }
 
+function test_update_one_order_auto(){
+    
+    echo -e "${YELLOW}🚀 Test: update order (auto) ${NO_COLOR}"
+      
+    curl_with_cookie_code http://localhost:5000/api/v1/orders/1 \
+        -X PUT \
+        -H "Content-Type: application/json" \
+        -d '{"user_id":1,"amounts_cents":5000000000,"currency":"CHN","status":"created"}'
+ 
+
+    if [ "$http_code" -eq 200 ]; then
+        echo -e "${GREEN}✅ Test passed (HTTP 200)${NO_COLOR}"
+    else
+        echo -e "${RED}❌ Test failed (HTTP $http_code)${NO_COLOR}"
+        exit 1
+    fi
+}
 
 
 show_menu(){
@@ -96,22 +136,22 @@ show_menu(){
 # Menu
 echo -e "${CYAN}=== API Orders Test Menu ===${NO_COLOR}"
 echo "1) Get all order"
-#echo "2) Delete one order"
-echo "2) Get one order auto"
-echo "3) Create test order auto"
-#echo "4) Update test order auto"
-echo "5) Create one order" 
-echo "6) Quit"
+echo "2) Delete one order"
+echo "3) Get one order auto"
+echo "4) Create test order auto"
+echo "5) Update test order auto"
+echo "6) Create one order" 
+echo "7) Quit"
 read -p "Choose an option: " choice
 
 case "$choice" in
     1) test_get_all_orders ;;
-#    2) test_delete_order ;;
-    2) test_get_one_order_auto ;;
-    3) test_create_one_order_auto ;;
-#    4) test_update_one_product_auto ;;
-    5) test_create_one_order;;
-    6) echo "Bye!"; exit 0 ;;
+    2) test_delete_order ;;
+    3) test_get_one_order_auto ;;
+    4) test_create_one_order_auto ;;
+    5) test_update_one_order_auto ;;
+    6) test_create_one_order;;
+    7) echo "Bye!"; exit 0 ;;
     *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
 esac
 

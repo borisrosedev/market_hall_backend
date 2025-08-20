@@ -3,11 +3,8 @@ import os
 from pathlib import Path
 from flask import Blueprint, request, jsonify, session
 from ..database import db 
-#from ..services import admin_required_with_exceptions
 from ..database.models import  Orders
 from ..services import test_info_request
-#from ..services.factories import json_required_with_validation
-#UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
 
 
 api_v1_orders = Blueprint("api_v1_orders", __name__,url_prefix="/api/v1/orders")
@@ -15,92 +12,48 @@ api_v1_orders = Blueprint("api_v1_orders", __name__,url_prefix="/api/v1/orders")
 logging.basicConfig(level=logging.DEBUG)
  
 
-@api_v1_orders.route("/<int:order_id>", methods=["GET","PUT", "PATCH", "DELETE"])
+@api_v1_orders.route("/<int:order_id>", methods=["GET","PUT", "DELETE"])
 #@session_required 
-def update_get_or_delete_order(order_id): #user_id,unique_name: str = None):
+def update_get_or_delete_order(order_id): 
     """ Update/GET/DELETE a order """
+    if request.method in ("PUT"):
+        order = db.session.execute(db.select(Orders).filter_by(id=order_id )).scalar()
+        if not order:
+            return jsonify(message="order not found"), 404
+        #test_info_request(request) 
+        data = request.get_json()
+        user_id = data.get('user_id') 
+        amounts_cents= data.get('amounts_cents')  
+        currency= data.get('currency')
+        status = data.get('status') 
+         
+        if user_id:
+            order.user_id = user_id
+        if amounts_cents:
+            order.amounts_cents = amounts_cents
+        if currency:
+            order.currency = currency  
+        if status:
+            order.status = status   
+         
+        db.session.commit()
+        return jsonify(message="order updated"), 200
     
-    if request.method in ("PUT", "PATH"):
-        """
-        if "role" in session and session["role"] == "admin":
-            user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
-        else:
-            user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        if not user:
-            return jsonify(message="invalid data")
-        
-        if request.is_json: 
-            data = request.get_json()
-            if "firstname" in data:
-                user.firstname = data.get("firstname")
-            if "lastname" in data:
-                user.lastname = data.get("lastname")
-            if "email" in data:
-                user.email = data.get("email")
-            if "password" in data:
-                user.password = data.get("password")
-
-            if session["role"] == "admin":
-                if "role" in data:
-                    user.role = data.get("role")
-        else:
-            if request.form.get('firstname'):
-                user.firstname = request.form.get('firstname')
-            if request.form.get('lastname'):
-                user.lastname = request.form.get('lastname')
-            if request.form.get('email'):
-                user.email = request.form.get('email')
-            if request.form.get('password'):
-                user.password = data.get("password")
-            if session["role"] == "admin":
-                if  request.form.get('role'):
-                    user.role = request.form.get('role')
- 
-            file = request.files['file']
-  
-            logging.info(file)
-
-            file.save(os.path.join(UPLOAD_FOLDER, unique_name))
-            user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-            user.photo_name = unique_name
- 
-
-        db.session.commit()  
-        """
-        return jsonify(message="order updated")
+         
     elif request.method == "GET":
-        order =  db.session.execute(db.select(Orders).filter_by(id=order_id)).scalar()
-        """ 
-        if "role" in session and session["role"] == "admin":
-            user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
-            if not user:
-                return jsonify(message="invalid data"), 400
-            return jsonify(user=user.to_dict())
-        user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        if not user:
-            return jsonify(message="invalid data"), 400
-        """
+        order =  db.session.execute(db.select(Orders).filter_by(id=order_id )).scalar()
+        if not order:
+            return jsonify(message="order not found"), 404
+         
         return jsonify(order=order.to_dict())
     else:
-        """
-        if "role" in session and session["role"] == "admin":
-            user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
-            if not user:
-                return jsonify(message="invalid data"), 400
-            db.session.delete(user)
-            db.session.commit()
-        else:
-            user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-            if not user:
-                return jsonify(message="invalid data"), 400
-            db.session.delete(user)
-            db.session.commit()
-        return jsonify(message="user deleted")
-        """ 
+        order =  db.session.execute(db.select(Orders).filter_by(id=order_id )).scalar()
+        if not order:
+            return jsonify(message="order not found"), 404
+        db.session.delete(order)
+        db.session.commit()
         return jsonify(message="order deleted")
-    return jsonify(message="order test")
-    
-
+ 
 
 @api_v1_orders.route("/", methods=["POST", "GET"])
 def get_all_or_create_order():
@@ -114,7 +67,7 @@ def get_all_or_create_order():
         amounts_cents =data.get('amounts_cents')
         currency = data.get('currency')
         status = data.get('status') 
-        test_info_request(request)
+        
         try:
             order = Orders(
                 user_id=user_id,
