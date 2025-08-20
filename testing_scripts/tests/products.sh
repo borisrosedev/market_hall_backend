@@ -95,6 +95,62 @@ function test_create_one_product_auto(){
     fi
 }
 
+function test_create_vermeer_product_auto(){
+ echo -e "${YELLOW}🚀 Test: create the La Jeune Fille à la perle test product (auto) ${NO_COLOR}"
+    filename_path="${BASE_DIR}/../../la-jeune-fille-a-perle.jpg"
+    if [ ! -f "$filename_path" ]; then
+        echo -e "${RED}❌ File not found: $filename${NO_COLOR}"
+        exit 1
+    fi
+
+    curl_with_cookie_code http://localhost:5000/api/v1/products/ \
+        -X POST \
+        -H "Content-Type: multipart/form-data" \
+        -F "name=La Jeune Fille à la perle" \
+        -F "description=Artist Johannes Vermeer" \
+        -F "price=100000000" \
+        -F "tags=art,Johannes,painting,Vermeer" \
+        -F "quantity=1" \
+        -F "file=@$filename_path"
+
+    if [[ "$http_code" -eq 201 ]]; then
+        echo -e "${GREEN}✅ Product created successfully${NO_COLOR}"
+        echo "$body" | jq .
+    else
+        echo -e "${RED}❌ Failed to create product (HTTP $http_code)${NO_COLOR}"
+        echo "$body" | jq .
+        exit 1
+    fi
+}
+
+function test_create_botticelli_product_auto(){
+ echo -e "${YELLOW}🚀 Test: create the La naissance de Vénus test product (auto) ${NO_COLOR}"
+    filename_path="${BASE_DIR}/../../la_nascita_di_Venere.gif"
+    if [ ! -f "$filename_path" ]; then
+        echo -e "${RED}❌ File not found: $filename${NO_COLOR}"
+        exit 1
+    fi
+
+    curl_with_cookie_code http://localhost:5000/api/v1/products/ \
+        -X POST \
+        -H "Content-Type: multipart/form-data" \
+        -F "name=La Naissance de Vénus" \
+        -F "description=La Naissance de Vénus est un tableau de Sandro Botticelli, peint vers 1482-1485 et conservé à la galerie des Offices. Il a été peint selon la technique de la tempera. Il représente la déesse Vénus arrivant sur le rivage après sa naissance." \
+        -F "price=100000000" \
+        -F "tags=art,Sandro,painting,Botticelli" \
+        -F "quantity=1" \
+        -F "file=@$filename_path"
+
+    if [[ "$http_code" -eq 201 ]]; then
+        echo -e "${GREEN}✅ Product created successfully${NO_COLOR}"
+        echo "$body" | jq .
+    else
+        echo -e "${RED}❌ Failed to create product (HTTP $http_code)${NO_COLOR}"
+        echo "$body" | jq .
+        exit 1
+    fi
+}
+
 
 
 function test_create_one_product(){
