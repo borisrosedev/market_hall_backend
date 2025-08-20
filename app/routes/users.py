@@ -7,6 +7,7 @@ from ..services import admin_required_with_exceptions
 from ..database.models import User, Cart
 from ..services import session_required, unique_filename_required, file_required, image_required 
 from ..services.factories import json_required_with_validation
+from ..utils import delete_file_in_uploads_folder
 
 UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
 if not UPLOAD_FOLDER.exists():
@@ -78,7 +79,6 @@ def update_get_or_delete_user(user_id,unique_name: str = None):
             file.save(os.path.join(UPLOAD_FOLDER, unique_name))
             user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
             user.photo_name = unique_name
- 
 
         db.session.commit()  
         return jsonify(message="user updated")
@@ -95,12 +95,16 @@ def update_get_or_delete_user(user_id,unique_name: str = None):
     else:
         if "role" in session and session["role"] == "admin":
             user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
+            if user.photo_name and isinstance(user.photo_name, str):
+                delete_file_in_uploads_folder(user.photo_name)
             if not user:
                 return jsonify(message="invalid data"), 400
             db.session.delete(user)
             db.session.commit()
         else:
             user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+            if user.photo_name and isinstance(user.photo_name, str):
+                delete_file_in_uploads_folder(user.photo_name)
             if not user:
                 return jsonify(message="invalid data"), 400
             db.session.delete(user)

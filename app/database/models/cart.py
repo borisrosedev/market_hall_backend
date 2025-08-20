@@ -11,7 +11,7 @@ class Cart(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"),
-        unique=True,          
+        unique=True,        
         index=True,
         nullable=False,
     )
@@ -43,9 +43,7 @@ class Cart(db.Model):
         "updated_at": self.updated_at,
         "items": [
             {
-                "id": it.id,
-                "name": it.name if it.name else None,
-                "photo_name": it.photo_name,
+                "product_id": it.product_id,
                 "quantity": it.quantity,
             }
             for it in self.items
