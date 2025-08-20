@@ -17,10 +17,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 @api_v1_orders.route("/<int:order_id>", methods=["GET","PUT", "PATCH", "DELETE"])
 #@session_required 
-def update_get_or_delete_order(): #user_id,unique_name: str = None):
+def update_get_or_delete_order(order_id): #user_id,unique_name: str = None):
     """ Update/GET/DELETE a order """
-    """
+    
     if request.method in ("PUT", "PATH"):
+        """
         if "role" in session and session["role"] == "admin":
             user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
         else:
@@ -65,8 +66,11 @@ def update_get_or_delete_order(): #user_id,unique_name: str = None):
  
 
         db.session.commit()  
-        return jsonify(message="user updated")
+        """
+        return jsonify(message="order updated")
     elif request.method == "GET":
+        order =  db.session.execute(db.select(Orders).filter_by(id=order_id)).scalar()
+        """ 
         if "role" in session and session["role"] == "admin":
             user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
             if not user:
@@ -75,8 +79,10 @@ def update_get_or_delete_order(): #user_id,unique_name: str = None):
         user =  db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
         if not user:
             return jsonify(message="invalid data"), 400
-        return jsonify(user=user.to_dict())
+        """
+        return jsonify(order=order.to_dict())
     else:
+        """
         if "role" in session and session["role"] == "admin":
             user =  db.session.execute(db.select(User).filter_by(id=user_id)).scalar()
             if not user:
@@ -90,7 +96,8 @@ def update_get_or_delete_order(): #user_id,unique_name: str = None):
             db.session.delete(user)
             db.session.commit()
         return jsonify(message="user deleted")
-    """ 
+        """ 
+        return jsonify(message="order deleted")
     return jsonify(message="order test")
     
 
