@@ -62,17 +62,31 @@ function test_file_upload_image_type (){
     -F "file=@.\la_nascita_di_Venere.gif"
 }
 
+
+function test_create_order(){
+    curl -X POST http://127.0.0.1:5000/api/v1/orders/ \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":1,"amounts_cents":10000099,"currency":"USD","status":"created"}'
+
+    curl -X POST http://127.0.0.1:5000/api/v1/orders/ \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":1,"amounts_cents":5000000000000,"currency":"JPY","status":"created"}'
+
+    curl -X POST http://127.0.0.1:5000/api/v1/orders/ \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":1,"amounts_cents":10099,"currency":"DBP","status":"created"}'
+           
+}
 #test_post
 #test_get_all_product 
-# test_get_ById_product
-# test_update_product
+#test_get_ById_product
+#test_update_product
 
 #test_create_product_daVinci
 #test_create_product_vermeer
 #test_create_product_botticelli
-# 
- 
 
- 
-# test_file_upload
-test_file_upload_image_type
+#test_file_upload
+#test_file_upload_image_type
+
+test_create_order

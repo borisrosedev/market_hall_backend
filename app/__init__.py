@@ -4,7 +4,7 @@ from datetime import timedelta
 from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
-from .routes import api_v1_users, api_v1_auth, api_v1_carts, api_v1_products, static_files, api_v1_notifications, api_v1_admin
+from .routes import api_v1_users, api_v1_auth, api_v1_carts, api_v1_products, static_files, api_v1_notifications, api_v1_admin, api_v1_orders
 from .database import db
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
@@ -34,11 +34,13 @@ def create_app():
     app.register_blueprint(api_v1_auth)
     app.register_blueprint(api_v1_products)
     app.register_blueprint(api_v1_carts)
-    app.register_blueprint(api_v1_notifications)
+    app.register_blueprint(api_v1_notifications) 
+    app.register_blueprint(api_v1_orders)
     app.register_blueprint(static_files)
+    
     db.init_app(app)
     with app.app_context():
-        from .database.models import User,Cart,CartProduct,Product,Notification
+        from .database.models import User,Cart,CartProduct,Product,Notification,Orders
         db.create_all()
 
 
