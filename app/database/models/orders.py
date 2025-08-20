@@ -35,5 +35,5 @@ class Orders(db.Model):
             "status": self.status.value, 
             "created_at": self.created_at,
             }
-    #def __repr__(self) -> str:
-    #    return f"<Orders id={self.id} user_id={self.user_id} currency{self.currency!r} status{self.status!r}>"
+    def __repr__(self) -> str:
+        return f"<Orders id={self.id} user_id={self.user_id} amounts_cents:{self.amounts_cents} currency{self.currency!r} status{self.status!r}>"
