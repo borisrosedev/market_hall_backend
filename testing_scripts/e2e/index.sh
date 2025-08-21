@@ -12,14 +12,16 @@ show_menu(){
   echo "1) Users"
   echo "2) Admins"
   echo "3) Products"
-  echo "4) Quit"
+  echo "4) Carts"
+  echo "5) Quit"
   read -p "Choose an option: " e2e_choice
 
   case "$e2e_choice" in
       1) "$BASE_DIR/users_flows.sh" ;;
       2) "$BASE_DIR/admins_flows.sh" ;;
       3) "$BASE_DIR/products_flows.sh" ;;
-      4) echo "Bye!"; exit 0 ;;
+      4) "$BASE_DIR/carts_flows.sh" ;;
+      5) echo "Bye!"; exit 0 ;;
       *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
   esac
 }
