@@ -27,8 +27,6 @@ function test_get_all_users_as_admin(){
 }
 
 
-
-
 function test_get_me {
     echo -e "${YELLOW}🚀 Test: get current user ${NO_COLOR}"
     curl_with_cookie_code "http://localhost:5000/api/v1/users/me" \

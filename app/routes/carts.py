@@ -25,7 +25,7 @@ def get_current_user_cart():
 
 
 
-@api_v1_carts.route("/<int:cart_id>/items/", methods=["DELETE"])
+@api_v1_carts.route("/<int:cart_id>/items", methods=["DELETE"])
 @session_required
 def delete_all_items_from_cart(cart_id):
     # ℹ️ You should create a decorator that checks if the user exists and returns it
