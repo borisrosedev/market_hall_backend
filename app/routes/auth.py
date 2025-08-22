@@ -16,18 +16,18 @@ def login():
 
     user = db.session.execute(db.select(User).filter_by(email=email)).scalar()
     if not user:
-        return jsonify(message="invalid data")
+        return jsonify(message="invalid data"), 400
     
     is_valid_password = user.check_password(password)
     if not is_valid_password:
-        return jsonify(message="invalid data")
+        return jsonify(message="invalid data"), 400
     
     session["email"] = user.email
     session["user_id"] = user.id
     session["role"] = user.role.value
     session.permanent = True
 
-    return jsonify(message="session started")
+    return jsonify(message="session started"), 200
 
 
 @api_v1_auth.route('/logout', methods=["GET"])
@@ -36,4 +36,4 @@ def logout():
     """ Log out the user """
     session.pop('email', None)
     session.pop('role', None)
-    return jsonify(message="session end")
+    return jsonify(message="session end"), 200

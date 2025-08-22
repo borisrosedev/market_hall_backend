@@ -1,0 +1,121 @@
+name: boris-pytest
+run-name: ${{ github.actor }} running boris-pytest
+
+on:
+  push:
+    branches:
+      - boris-rose-dev
+      - development
+
+permissions:
+  contents: read
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      has_htmlcov: ${{ steps.check_htmlcov.outputs.has_htmlcov }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run tests (JUnit + coverage)
+        run: |
+          mkdir -p htmlcov
+          pytest tests.py --doctest-modules \
+            --junitxml=junit.xml \
+            --cov=com --cov-branch \
+            --cov-report=xml:coverage.xml \
+            --cov-report=html:htmlcov || true
+
+
+      - id: check_htmlcov
+        name: Check if htmlcov exists and is non-empty
+        run: |
+          if [ -d htmlcov ] && [ "$(ls -A htmlcov)" ]; then
+            echo "has_htmlcov=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_htmlcov=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload junit.xml
+        if: ${{ always() && hashFiles('junit.xml') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: junit.xml
+          if-no-files-found: warn
+
+      - name: Upload coverage.xml
+        if: ${{ always() && hashFiles('coverage.xml') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: warn
+
+      - name: Upload HTML coverage (htmlcov/)
+        if: ${{ always() && steps.check_htmlcov.outputs.has_htmlcov == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: htmlcov
+          if-no-files-found: warn
+
+      - name: Upload coverage to Codecov
+        if: ${{ always() && hashFiles('coverage.xml') != '' }}
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload JUnit to Codecov (Test Analytics)
+        if: ${{ always() && hashFiles('junit.xml') != '' }}
+        uses: codecov/test-results-action@v1
+        with:
+          files: junit.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+          verbose: true
+
+  publish-coverage-pages:
+    needs: python-tests
+    if: ${{ needs.python-tests.outputs.has_htmlcov == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download HTML coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-html
+          path: htmlcov
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: htmlcov
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
