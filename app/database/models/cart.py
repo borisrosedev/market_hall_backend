@@ -45,6 +45,8 @@ class Cart(db.Model):
             {
                 "product_id": it.product_id,
                 "quantity": it.quantity,
+                "name": it.product.name,
+                "photo_name":it.product.photo_name
             }
             for it in self.items
         ],

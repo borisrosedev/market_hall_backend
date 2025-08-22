@@ -21,6 +21,7 @@ class CartProduct(db.Model):
     cart: Mapped["Cart"] = relationship(back_populates="items")
     product: Mapped["Product"] = relationship(back_populates="carts_link")
 
+
     __table_args__ = (
         CheckConstraint("quantity >= 0", name="ck_cart_products_quantity_non_negative"),
         Index("ix_cart_products_cart", "cart_id"),
