@@ -19,7 +19,7 @@ function test_create_login_store_cookie_get_me_create_get_update_product_get_upd
     sleep 2
     test_get_me 
     sleep 2 
-    test_create_one_product_auto
+    test_create_one_product_auto "camera-1.jpg"
     sleep 2
     test_get_one_product_auto
     sleep 2
