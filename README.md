@@ -1,14 +1,8 @@
-# Install the app dependencies
-```bash
-pip install -r requirements. txt
-```
+# Badges
 
-# Run the app
-```shell 
-.venv/Scripts/activate
-```
+[![codecov](https://codecov.io/gh/borisrosedev/market_hall_backend/graph/badge.svg?token=<TOKEN_OPTIONNEL>)](https://codecov.io/gh/borisrosedev/market_hall_backend)
 
-# Check if ON DELETE CASCADE  CONSTRAINT is present
-```bash
-echo "PRAGMA foreign_key_list(carts);" | sqlite3 market_hall.db
-```
+
+![CI](https://github.com/borisrosedev/market_hall_backend/actions/workflows/boris-pytest.yml/badge.svg)
+
+
