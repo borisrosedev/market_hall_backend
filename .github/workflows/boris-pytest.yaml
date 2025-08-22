@@ -27,43 +27,54 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
-      - name: Test with pytest (XML + HTML coverage)
+      - name: Test with pytest (JUnit + XML + HTML coverage)
         run: |
           pytest tests.py --doctest-modules \
-            --junitxml=junit/test-results.xml \
-            --cov=com --cov-branch --cov-report=xml --cov-report=xml:coverage.xml --cov-report=html:htmlcov
+            --junitxml=junit.xml \
+            --cov=com --cov-branch \
+            --cov-report=xml:coverage.xml \
+            --cov-report=html:htmlcov
 
-      - name: Upload pytest test results
+      - name: Upload pytest test results (artifact)
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: pytest-results
-          path: junit/test-results.xml
+          path: junit.xml
 
-      - name: Upload coverage.xml
+      - name: Upload coverage.xml (artifact)
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml
           path: coverage.xml
 
-      - name: Upload HTML coverage (htmlcov/)
+      - name: Upload HTML coverage (artifact)
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-html
           path: htmlcov
 
-      - name: Upload coverage to Codecov (optional)
+      # === Codecov : couverture ===
+      - name: Upload coverage to Codecov
         if: ${{ always() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v4
         with:
           files: coverage.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}   # requis pour repo privé (recommandé en v4)
           fail_ci_if_error: false
           verbose: true
 
-
+      # === Codecov : résultats de tests (JUnit) ===
+      - name: Upload JUnit to Codecov (Test Analytics)
+        if: ${{ always() }}
+        uses: codecov/test-results-action@v1
+        with:
+          files: junit.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+          verbose: true
 
   publish-coverage-pages:
     needs: python-tests
