@@ -1,4 +1,4 @@
-name: Ruff Auto-Fix
+name: boris-ruff-autofix
 run-name: ${{ github.actor }} running ruff auto-fix
 
 on:
