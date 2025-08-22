@@ -11,7 +11,7 @@ source "$BASE_DIR/../tests/products.sh"
 
 function test_create_login_store_cookie_get_me_create_get_update_product_get_updated_data_create_new_user_get_all_users_get_my_account_logout() {
     echo -e "${YELLOW}🚀 Test e2e: Login -> Create Prod -> Get it -> Update it -> Get all -> Logout -> Get all ${NO_COLOR}"
-    test_create_future_admin_auto "admin_test"
+    create_batch_4_admins
     sleep 2
     test_login_and_store_cookie_auto "admin_test@gmail.com"
     sleep 2

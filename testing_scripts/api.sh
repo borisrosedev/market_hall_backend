@@ -12,54 +12,54 @@ function test_update_product(){
     -d '{"name":"test","description":"test","price":100,"quantity":10}'
 }
 
-function test_create_product_daVinci(){
+function test_create_product_camera1(){
     curl -X POST http://localhost:5000/api/v1/products/ \
     -H "Content-Type: multipart/form-data" \
-    -F "name=Mona Lisa" \
-    -F "description=Painting of the most famous artist Leonardo DaVinci" \
+    -F "name=Camera1" \
+    -F "description=Testing Description" \
     -F "price=1000000000" \
     -F "tags=painting,art" \
     -F "quantity=1" \
-    -F "file=@./monalisa.png"
+    -F "file=@./testing_images/products/camera-1.jpg"
 }
 
 
-function test_create_product_vermeer(){
+function test_create_product_camera2(){
     curl -X POST http://localhost:5000/api/v1/products/ \
     -H "Content-Type: multipart/form-data" \
-    -F "name=La Jeune Fille à la perle" \
-    -F "description=Artist Johannes Vermeer" \
-    -F "price=1540000" \
+    -F "name=Camera2" \
+    -F "description=Testing Description" \
+    -F "price=20000" \
     -F "tags=painting,art" \
     -F "quantity=1" \
-    -F "file=@./la-jeune-fille-a-perle.jpg"
+    -F "file=@./testing_images/products/camera-2.jpg"
 }
 
-function test_create_product_botticelli(){
+function test_create_product_pocket-watch(){
     curl -X POST http://localhost:5000/api/v1/products/ \
     -H "Content-Type: multipart/form-data" \
-    -F "name=La naissance de Vénus" \
-    -F "description=La Naissance de Vénus est un tableau de Sandro Botticelli, peint vers 1482-1485 et conservé à la galerie des Offices. Il a été peint selon la technique de la tempera. Il représente la déesse Vénus arrivant sur le rivage après sa naissance. Artist  Sandro Botticelli" \
+    -F "name=Pocket watch" \
+    -F "description=Testing Description" \
     -F "price=5240000" \
     -F "tags=painting,art" \
     -F "quantity=1" \
-    -F "file=@./la_nascita_di_Venere.gif"
+    -F "file=@./testing_images/products/pocket-watch-1.jpg"
 }
  
 function test_file_upload (){
     curl -X POST http://localhost:5000/static/files/upload \
-    -F "file=@.\monalisa.png"
+    -F "file=@./testing_images/products/pocket-watch-1.jpg"
     
     curl -X POST http://localhost:5000/static/files/upload  
-    #-F "file=@.\la_nascita_di_Venere.gif"
+    
 }
 
 function test_file_upload_image_type (){
     curl -X POST http://localhost:5000/static/files/upload \
-    -F "file=@.\monalisa.png"
+    -F "file=@./testing_images/products/camera-1.jpg"
     
     curl -X POST http://localhost:5000/static/files/upload \
-    -F "file=@.\la_nascita_di_Venere.gif"
+    -F "file=@./testing_images/products/camera-2.jpg"
 }
 
 
@@ -82,11 +82,11 @@ function test_create_order(){
 #test_get_ById_product
 #test_update_product
 
-#test_create_product_daVinci
-#test_create_product_vermeer
-#test_create_product_botticelli
+test_create_product_camera1
+test_create_product_camera2
+test_create_product_pocket-watch
 
-#test_file_upload
-#test_file_upload_image_type
+test_file_upload
+test_file_upload_image_type
 
 test_create_order

@@ -73,7 +73,7 @@ function test_create_two_product_auto(){
         -H "Content-Type: multipart/form-data" \
           -F "name=$test_product_name" \
         -F "description=Testing Description" \
-        -F "price=100000000" \
+        -F "price=200000000" \
         -F "tags=art,antique" \ 
         -F "quantity=1" \
         -F "file=@$filename_path"
@@ -105,7 +105,7 @@ function test_create_three_product_auto(){
         -H "Content-Type: multipart/form-data" \
         -F "name=$test_product_name" \
         -F "description=Testing Description" \
-        -F "price=100000000" \
+        -F "price=300000000" \
         -F "tags=art,antique" \
         -F "quantity=1" \
         -F "file=@$filename_path"
