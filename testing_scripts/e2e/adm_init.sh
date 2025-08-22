@@ -11,17 +11,17 @@ source "$BASE_DIR/../tests/products.sh"
 
 function test_create_login_store_cookie_get_me_create_get_update_product_get_updated_data_create_new_user_get_all_users_get_my_account_logout() {
     echo -e "${YELLOW}🚀 Test e2e: Login -> Create Prod -> Get it -> Update it -> Get all -> Logout -> Get all ${NO_COLOR}"
-    test_create_admin
+    test_create_future_admin_auto "admin_test"
     sleep 2
-    test_login_and_store_cookie_auto
+    test_login_and_store_cookie_auto "admin_test@gmail.com"
     sleep 2
     test_get_me 
     sleep 2 
-    test_create_one_product_auto
+    test_create_one_product_auto "camera-1.jpg"
     sleep 2 
-    test_create_vermeer_product_auto 
+    test_create_two_product_auto "camera-2.jpg"
     sleep 2
-    test_create_botticelli_product_auto
+    test_create_three_product_auto "pocket-watch-1.jpg"
     sleep 2 
     test_create_one_not_admin_user_auto
     sleep 2

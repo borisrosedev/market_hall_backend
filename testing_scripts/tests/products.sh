@@ -55,11 +55,14 @@ function test_create_one_product_auto() {
     response_code_and_jq_body "$http_code" 201 "created successfully"
 }
 
-# shellcheck enable=all
-# ⚠️ You need to do it as I did the camere-1.jpg down below
-function test_create_vermeer_product_auto(){
+# shellcheck enable=all 
+function test_create_two_product_auto(){
  echo -e "${YELLOW}🚀 Test: create the La Jeune Fille à la perle test product (auto) ${NO_COLOR}"
-    filename_path="${BASE_DIR}/../../la-jeune-fille-a-perle.jpg"
+    local test_product_name="$1"
+
+    echo -e "${YELLOW}🚀 Test: create product $test_product_name (auto) ${NO_COLOR}"
+    filename_path="${BASE_DIR}/../../testing_images/products/$test_product_name"
+
     if [ ! -f "$filename_path" ]; then
         echo -e "${RED}❌ File not found: $filename${NO_COLOR}"
         exit 1
@@ -68,10 +71,10 @@ function test_create_vermeer_product_auto(){
     curl_with_cookie_code http://localhost:5000/api/v1/products/ \
         -X POST \
         -H "Content-Type: multipart/form-data" \
-        -F "name=La Jeune Fille à la perle" \
-        -F "description=Artist Johannes Vermeer" \
+          -F "name=$test_product_name" \
+        -F "description=Testing Description" \
         -F "price=100000000" \
-        -F "tags=art,Johannes,painting,Vermeer" \
+        -F "tags=art,antique" \ 
         -F "quantity=1" \
         -F "file=@$filename_path"
 
@@ -84,11 +87,14 @@ function test_create_vermeer_product_auto(){
         exit 1
     fi
 }
-
-# ⚠️ You need to do it as I did the camere-1.jpg down below
-function test_create_botticelli_product_auto(){
+ 
+function test_create_three_product_auto(){
  echo -e "${YELLOW}🚀 Test: create the La naissance de Vénus test product (auto) ${NO_COLOR}"
-    filename_path="${BASE_DIR}/../../la_nascita_di_Venere.gif"
+    local test_product_name="$1"
+    
+    echo -e "${YELLOW}🚀 Test: create product $test_product_name (auto) ${NO_COLOR}"
+    filename_path="${BASE_DIR}/../../testing_images/products/$test_product_name"
+
     if [ ! -f "$filename_path" ]; then
         echo -e "${RED}❌ File not found: $filename${NO_COLOR}"
         exit 1
@@ -97,10 +103,10 @@ function test_create_botticelli_product_auto(){
     curl_with_cookie_code http://localhost:5000/api/v1/products/ \
         -X POST \
         -H "Content-Type: multipart/form-data" \
-        -F "name=La Naissance de Vénus" \
-        -F "description=La Naissance de Vénus est un tableau de Sandro Botticelli, peint vers 1482-1485 et conservé à la galerie des Offices. Il a été peint selon la technique de la tempera. Il représente la déesse Vénus arrivant sur le rivage après sa naissance." \
+        -F "name=$test_product_name" \
+        -F "description=Testing Description" \
         -F "price=100000000" \
-        -F "tags=art,Sandro,painting,Botticelli" \
+        -F "tags=art,antique" \
         -F "quantity=1" \
         -F "file=@$filename_path"
 
