@@ -69,15 +69,21 @@ def add_cart_item_or_update_quantity(cart_id, item_id):
             if cart_item.product_id == item_id:
                 # ✅ if exists, we only change the quantity value
                 if qty is not None:
-                    cart_item.quantity = qty
+                    result = cart_item.quantity + qty
+                    if result <= 0 or qty == 0:
+                        cart.items.remove(cart_item)
+                    else:
+                        cart_item.quantity = cart_item.quantity + qty
                     db.session.commit()
-                    return jsonify(message="cart item quantity updated")          
+                    return jsonify(message="cart item quantity updated")       
         # ➡️ Case it does not already exist in the user's cart
         # ✅ we create a new cart product 
         new_cart_item = CartProduct(product=product)
         # ✅ We give it the quantity passed through the url
-        if qty is not None:         
-            new_cart_item.quantity = qty  
+        if qty is not None and qty > 0:         
+            new_cart_item.quantity = qty
+        else:
+            return jsonify(message="invalid cart item quantity"), 400
         # ✅ we add the new_cart_item to the user's cart 
         cart.items.append(new_cart_item)
         db.session.commit()
