@@ -146,7 +146,7 @@ function test_create_one_product(){
         -F "price=$price" \
         -F "tags=$tags" \
         -F "quantity=$quantity" \
-        -F "file=@$filename"
+        -F "file=@$filename_path"
 
     response_code_and_jq_body "$http_code" 201 "created successfully"
 }
