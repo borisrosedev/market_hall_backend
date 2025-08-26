@@ -68,6 +68,7 @@ function test_create_order(){
     -H "Content-Type: application/json" \
     -d '{"user_id":1,"amounts_cents":10000099,"currency":"USD","status":"created"}'
 
+   
     curl -X POST http://127.0.0.1:5000/api/v1/orders/ \
     -H "Content-Type: application/json" \
     -d '{"user_id":1,"amounts_cents":5000000000000,"currency":"JPY","status":"created"}'
@@ -77,16 +78,27 @@ function test_create_order(){
     -d '{"user_id":1,"amounts_cents":10099,"currency":"DBP","status":"created"}'
            
 }
+
+function test_create_order_adresses(){
+    curl -X POST http://127.0.0.1:5000/api/v1/orders/ \
+    -H "Content-Type: application/json" \
+    -d '{"user_id":1,"amounts_cents":10000099,"currency":"USD","status":"created"}'
+
+    curl -X POST http://127.0.0.1:5000/api/v1/order_addresses/ \
+    -H "Content-Type: application/json" \
+    -d '{"order_id":1,"type":"shipping","full_name":"Cpy adr","line1":"Rue de la compagnie","line2":"1 etage","city":"Paris","postal_code":"75000","country":"FRANCE","phone":"070125832321"}'
+}
 #test_post
 #test_get_all_product 
 #test_get_ById_product
 #test_update_product
 
-test_create_product_camera1
-test_create_product_camera2
-test_create_product_pocket-watch
+#test_create_product_camera1
+#test_create_product_camera2
+#test_create_product_pocket-watch
 
-test_file_upload
-test_file_upload_image_type
+#test_file_upload
+#test_file_upload_image_type
 
-test_create_order
+#test_create_order
+test_create_order_adresses
