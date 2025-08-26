@@ -41,5 +41,5 @@ class OrderAddresses(db.Model):
             }
        
     def __repr__(self) -> str:
-        return f"<OrderAddresses id={self.id} order_idd={self.order_id} type{self.type!r} full_name={self.full_name} line1={self.line1} line2={self.line2} \
+        return f"<OrderAddresses id={self.id} order_id={self.order_id} type{self.type!r} full_name={self.full_name} line1={self.line1} line2={self.line2} \
             city={self.city} postal_code={self.postal_code} country={self.country} phone={self.phone}  >"  

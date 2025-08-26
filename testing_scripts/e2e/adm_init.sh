@@ -10,6 +10,7 @@ source "$BASE_DIR/../tests/products.sh"
 source "$BASE_DIR/../tests/admins.sh"
 source "$BASE_DIR/../tests/order.sh"
 source "$BASE_DIR/../tests/order_addresses.sh"
+source "$BASE_DIR/../tests/order_items.sh"
 
 function test_create_login_store_cookie_get_me_create_get_update_product_get_updated_data_create_new_user_get_all_users_get_my_account_logout() {
     echo -e "${YELLOW}🚀 Test e2e: Login -> Create Prod -> Get it -> Update it -> Get all -> Logout -> Get all ${NO_COLOR}"
@@ -43,6 +44,10 @@ function test_create_login_store_cookie_get_me_create_get_update_product_get_upd
     test_create_one_order_addresse_auto
     sleep 2 
     test_get_all_order_addresses
+    sleep 2
+    test_create_one_order_item_auto
+    sleep 2
+    test_get_all_order_items
     sleep 2
     test_logout_and_remove_session_info
     echo -e "${YELLOW}🎉 Test e2e: End of the test ${NO_COLOR}"
