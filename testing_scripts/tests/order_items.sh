@@ -41,17 +41,28 @@ function test_get_all_order_items(){
 function test_create_one_order_item_auto(){
     echo -e "${YELLOW}🚀 Test: create order (auto) ${NO_COLOR}"
      
+    """
+    unit_price_cents = 2999  # 29.99€
+    quantity = 3
+    tax_rate = 0.20  # TVA 20%
+    discount_rate = 0.10  # Remise 10% 
+    subtotal_cents = unit_price_cents * quantity = 2999 * 3  /100= 89.97€
+    discount_cents = subtotal_cents * discount_rate = 899 /100 = 8.99€
+    amount_after_discount = subtotal_cents - discount_cents =  8098 /100 = 80.98€
+    tax_cents = amount_after_discount * tax_rate = 1619 /100 = 16.19€
+    total_cents = amount_after_discount + tax_cents = 9717 /100 = 97.17€
+    """ 
     json_data='{
         "order_id": 1, 
         "product_id": 1,
         "sku":"Ref-produit-num0001",
         "product_name" : "Camera1",
-        "unit_price_cents" : 1,
-        "quantity" : 1, 
-        "subtotal_cents" : 10,
-        "tax_cents" : 1, 
-        "discount_cents" : 1, 
-        "total_cents" : 1, 
+        "unit_price_cents" : 2999,
+        "quantity" : 3, 
+        "subtotal_cents" : 8997,
+        "tax_cents" : 1619, 
+        "discount_cents" : 899, 
+        "total_cents" : 9717, 
         "currency" : "EUR", 
         "variant_json": {
             "color": "red",
@@ -111,19 +122,29 @@ function test_delete_order_item(){
 
 function test_update_one_order_item_auto(){
     
-    echo -e "${YELLOW}🚀 Test: update order (auto) ${NO_COLOR}"
-      
+    echo -e "${YELLOW}🚀 Test: update order item (auto) ${NO_COLOR}"
+        """
+        unit_price_cents = 2999  # 29.99€
+        quantity = 3
+        tax_rate = 0.20  # TVA 20%
+        discount_rate = 0.10  # Remise 10% 
+        subtotal_cents = unit_price_cents * quantity = 8997 /100= 89.97€
+        discount_cents = subtotal_cents * discount_rate = 899 /100 = 8.99€
+        amount_after_discount = subtotal_cents - discount_cents =  8098 /100 = 80.98€
+        tax_cents = amount_after_discount * tax_rate = 1619 /100 = 16.19€
+        total_cents = amount_after_discount + tax_cents = 9717 /100 = 97.17€
+        """ 
         json_data='{
         "order_id": 1, 
         "product_id": 1,
         "sku":"Ref-produit-num0001",
         "product_name" : "Camera1",
-        "unit_price_cents" : 1,
-        "quantity" : 1, 
-        "subtotal_cents" : 10,
-        "tax_cents" : 1, 
-        "discount_cents" : 1, 
-        "total_cents" : 1, 
+        "unit_price_cents" : 2999,
+        "quantity" : 3, 
+        "subtotal_cents" : 8997,
+        "tax_cents" : 1619, 
+        "discount_cents" : 899, 
+        "total_cents" : 9717, 
         "currency" : "EUR", 
         "variant_json": {
             "color": "green",
