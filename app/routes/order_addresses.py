@@ -4,7 +4,7 @@ from pathlib import Path
 from flask import Blueprint, request, jsonify, session
 from ..database import db 
 from ..database.models import OrderAddresses
-from ..services import test_info_request
+from ..services import test_info_request,session_required
  
 api_v1_order_addresses = Blueprint("api_v1_order_addresses", __name__,url_prefix="/api/v1/order_addresses")
 
@@ -17,11 +17,10 @@ def update_get_or_delete_order_addresses(order_addresses_id):
         order_addresses = db.session.execute(db.select(OrderAddresses).filter_by(id=order_addresses_id )).scalar()
         if not order_addresses:
             return jsonify(message="order addresses not found"), 404
-        test_info_request(request) 
+        #test_info_request(request) 
         data = request.get_json() 
         order_id= data.get('order_id') 
-        type = data.get('type') 
-        amounts_cents= data.get('amounts_cents')  
+        type = data.get('type')  
         full_name= data.get('full_name')
         line1 = data.get('line1') 
         line2 = data.get('line2') 
@@ -73,8 +72,7 @@ def get_all_or_create_order_addresses():
         order_addresses = db.session.execute(db.select(OrderAddresses).order_by(OrderAddresses.id)).scalars()
         return jsonify(order_addresses=[order_address.to_dict() for order_address in order_addresses])
     else: 
-        data = request.get_json()
-        
+        data = request.get_json() 
         order_id= data.get('order_id') 
         type = data.get('type')   
         full_name= data.get('full_name')
