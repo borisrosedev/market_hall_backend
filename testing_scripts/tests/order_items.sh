@@ -41,11 +41,35 @@ function test_get_all_order_items(){
 function test_create_one_order_item_auto(){
     echo -e "${YELLOW}🚀 Test: create order (auto) ${NO_COLOR}"
      
+    json_data='{
+        "order_id": 1, 
+        "product_id": 1,
+        "sku":"Ref-produit-num0001",
+        "product_name" : "Camera1",
+        "unit_price_cents" : 1,
+        "quantity" : 1, 
+        "subtotal_cents" : 10,
+        "tax_cents" : 1, 
+        "discount_cents" : 1, 
+        "total_cents" : 1, 
+        "currency" : "EUR", 
+        "variant_json": {
+            "color": "red",
+            "size": "L", 
+            "material": "cotton"
+        },
+        "metadata_json": {
+            "stripe_item_id": "si_1234567890",
+            "source": "web"
+        }
+    }'
+
+    echo "JSON to send:"
+    echo "$json_data" | jq .
 
     curl_with_cookie_code http://127.0.0.1:5000/api/v1/order_items/ \
         -X POST \
         -H "Content-Type: application/json" \
-        -d '{"order_id":1,"type":"shipping","full_name":"Legros LLC","line1":"repudiandae deserunt modi","line2":"deserunt repudiandae modi","city":"Paris","postal_code":"75000","country":"FRANCE","phone":"214-412-7297"}'
 
 
     if [[ "$http_code" -eq 201 ]]; then
@@ -89,12 +113,40 @@ function test_update_one_order_item_auto(){
     
     echo -e "${YELLOW}🚀 Test: update order (auto) ${NO_COLOR}"
       
+        json_data='{
+        "order_id": 1, 
+        "product_id": 1,
+        "sku":"Ref-produit-num0001",
+        "product_name" : "Camera1",
+        "unit_price_cents" : 1,
+        "quantity" : 1, 
+        "subtotal_cents" : 10,
+        "tax_cents" : 1, 
+        "discount_cents" : 1, 
+        "total_cents" : 1, 
+        "currency" : "EUR", 
+        "variant_json": {
+            "color": "green",
+            "size": "L", 
+            "material": "cotton"
+        },
+        "metadata_json": {
+            "stripe_item_id": "si_1234567890",
+            "source": "web"
+        }
+    }'
+
+    echo "JSON to send:"
+    echo "$json_data" | jq .
+
     curl_with_cookie_code http://localhost:5000/api/v1/order_items/1 \
         -X PUT \
         -H "Content-Type: application/json" \
-        -d '{"order_id":1,"type":"billing","full_name":"LLC Legros","line1":"repudiandae deserunt modi","line2":"deserunt repudiandae modi","city":"Paris","postal_code":"75000","country":"FRANCE","phone":"214-412-7297"}'
+        -d "$json_data"
 
-
+    #echo "HTTP Code: $http_code"
+    #echo "Response body:"
+    #echo "$body"
     if [ "$http_code" -eq 200 ]; then
         echo -e "${GREEN}✅ Test passed (HTTP 200)${NO_COLOR}"
     else
