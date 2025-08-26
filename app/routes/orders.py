@@ -70,12 +70,12 @@ def get_all_or_create_order():
     else: 
         data = request.get_json()
 
-        user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        current_user =user.to_dict()
-        if not current_user:
-            return jsonify(message="invalid user data"), 400 
+        #user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        #current_user =user.to_dict()
+        #if not current_user:
+        #    return jsonify(message="invalid user data"), 400 
         
-        user_id =  current_user['id'] # data.get('user_id')
+        user_id = data.get('user_id')
         amounts_cents =data.get('amounts_cents')
         currency = data.get('currency')
         status = data.get('status') 
