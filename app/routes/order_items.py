@@ -60,6 +60,8 @@ def update_get_or_delete_order_items(order_items_id):
             order_items.discount_cents = discount_cents
         if total_cents:
             order_items.total_cents = total_cents 
+        if currency:
+            order_items.currency = currency     
         if variant_json:
             order_items.variant_json = variant_json
         if metadata_json:
@@ -68,7 +70,7 @@ def update_get_or_delete_order_items(order_items_id):
             order_items.created_at = created_at        
         db.session.commit()
         
-        return jsonify(message="order addresses updated"), 200    
+        return jsonify(message="order items updated"), 200    
     elif request.method == "GET":
         order_items =  db.session.execute(db.select(OrderItems).filter_by(id=order_items_id )).scalar()
         if not order_items:
