@@ -19,13 +19,13 @@ class OrderAddresses(db.Model):
         ) 
    
     type: Mapped[TypeOrderAddresses] = mapped_column(Enum(TypeOrderAddresses) )
-    full_name: Mapped[str] = mapped_column(String(256),nullable=False)
-    line1 : Mapped[str] = mapped_column (String (256), nullable=False)  
-    line2 : Mapped[str] = mapped_column (String [256], nullable=True)
-    city : Mapped[str] = mapped_column (String (256), nullable=False) 
-    postal_code : Mapped[str] = mapped_column (String(256), nullable=False)
-    country : Mapped[str] = mapped_column (String(2), nullable=False)
-    phone: Mapped[str] = mapped_column (String(20),nullable=True)
+    full_name: Mapped[str] = mapped_column( nullable=False)
+    line1 : Mapped[str] = mapped_column (  nullable=False)  
+    line2 : Mapped[str] = mapped_column (  nullable=True)
+    city : Mapped[str] = mapped_column (  nullable=False) 
+    postal_code : Mapped[str] = mapped_column ( nullable=False)
+    country : Mapped[str] = mapped_column (  nullable=False)
+    phone: Mapped[str] = mapped_column ( nullable=True)
     def to_dict(self) -> dict:
         return {
             "id": self.id ,

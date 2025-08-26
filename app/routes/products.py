@@ -38,6 +38,7 @@ def get_all_delete_all_or_create_product(unique_name:str=None):
     price= request.form.get('price')
     tags = request.form.get('tags')
     quantity= request.form.get('quantity')
+    sku= request.form.get('sku')
     file = request.files["file"]
     file.save(os.path.join(UPLOAD_FOLDER, unique_name))
     test_info_request(request)
@@ -49,6 +50,7 @@ def get_all_delete_all_or_create_product(unique_name:str=None):
             photo_name=unique_name,
             price=price,
             quantity=quantity,
+            sku=sku,
         )
         tags_helper(product=product,tags=tags)
         db.session.add(product)
@@ -99,6 +101,7 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
             price = data.get("price")
             tags = data.get("tags")
             quantity = data.get("quantity")
+            sku = data.get("sku")
         else:
             if unique_name:
                 if isinstance(product.photo_name, str):
@@ -113,6 +116,7 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
             price = request.form.get("price")
             tags = request.form.get("tags")
             quantity = request.form.get("quantity")
+            sku = request.form.get("sku")
 
         if description is not None:
             product.description = description
@@ -130,6 +134,10 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
             val = to_int(quantity)
             if val is not None:
                 product.quantity = val
+        if sku is not None:
+            val = to_int(sku)
+            if val is not None:
+                product.sku = val        
         if tags is not None:
             tags_helper(product=product, tags=tags)
 
