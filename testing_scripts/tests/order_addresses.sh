@@ -107,12 +107,12 @@ function test_update_one_order_addresse_auto(){
 show_menu(){
 
 # Menu
-echo -e "${CYAN}=== API Orders Test Menu ===${NO_COLOR}"
-echo "1) Get all order"
-echo "2) Delete one order"
-echo "3) Get one order auto"
-echo "4) Create test order auto"
-echo "5) Update test order auto"
+echo -e "${CYAN}=== API Orders Addresses Test Menu ===${NO_COLOR}"
+echo "1) Get all order addresses"
+echo "2) Delete one order addresse"
+echo "3) Get one order addresse auto"
+echo "4) Create test order addresse auto"
+echo "5) Update test order addresse auto"
 echo "6) Quit"
 read -p "Choose an option: " choice
 
