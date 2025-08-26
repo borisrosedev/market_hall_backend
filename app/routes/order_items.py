@@ -72,7 +72,7 @@ def get_all_or_create_order_items():
     """ GET ALL ORDER ITEMS OR CREATE A ORDER ITEMS"""
     if request.method == "GET": 
         order_items = db.session.execute(db.select(OrderItems).order_by(OrderItems.id)).scalars()
-        return jsonify(order_item=[order_items.to_dict() for order_item in order_items])
+        return jsonify(order_items=[order_item.to_dict() for order_item in order_items])
     else: 
         """ 
         data = request.get_json() 

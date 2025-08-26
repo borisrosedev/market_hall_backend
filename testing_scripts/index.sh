@@ -11,11 +11,10 @@ echo "2) Users"
 echo "3) Files"
 echo "4) Auth"
 echo "5) Admins"
-echo "6) End To End"
-echo "7) Store example for test admin"
-echo "8) Order"
-echo "9) Order addresses"
-echo "10) Quit"
+echo "6) Orders"
+echo "7) End To End"
+echo "8) Store example for test admin" 
+echo "9) Quit"
 read -p "Choose an option: " choice
 
 case "$choice" in
@@ -24,11 +23,10 @@ case "$choice" in
     3) "$BASE_DIR/tests/files.sh" ;;
     4) "$BASE_DIR/tests/auth.sh" ;;
     5) "$BASE_DIR/tests/admins.sh" ;;
-    6) "$BASE_DIR/e2e/index.sh" ;;
-    7) "$BASE_DIR/e2e/adm_init.sh" ;;
-    8) "$BASE_DIR/tests/order.sh" ;;
-    9) "$BASE_DIR/tests/order_addresses.sh" ;;
-    10) echo "Bye!"; exit 0 ;;
+    6) "$BASE_DIR/tests/order_menu.sh" ;;
+    7) "$BASE_DIR/e2e/index.sh" ;;
+    8) "$BASE_DIR/e2e/adm_init.sh" ;;
+    9) echo "Bye!"; exit 0 ;;
     *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
 esac
 
