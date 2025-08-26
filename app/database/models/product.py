@@ -16,6 +16,7 @@ class Product(db.Model):
     photo_name: Mapped[str] = mapped_column(nullable=False)
     price: Mapped[float] = mapped_column(nullable=False)
     quantity: Mapped[int] = mapped_column(nullable=False)
+    sku:Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
@@ -42,6 +43,7 @@ class Product(db.Model):
             "photo_name": self.photo_name,
             "price": self.price,
             "quantity": self.quantity,
+            "sku":self.sku,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "tags": [
@@ -54,4 +56,4 @@ class Product(db.Model):
         }
 
     def __repr__(self) -> str:
-        return f"<Product id={self.id} name={self.name!r} description={self.description!r} photo_name={self.photo_name!r} price={self.price} quantity={self.quantity}>"
+        return f"<Product id={self.id} name={self.name!r} description={self.description!r} photo_name={self.photo_name!r} price={self.price} quantity={self.quantity} sku={self.sku}>"
