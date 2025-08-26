@@ -7,3 +7,4 @@ from .notifications import api_v1_notifications
 from .admin import api_v1_admin
 from .orders import api_v1_orders
 from .order_addresses import api_v1_order_addresses 
+from .order_items import api_v1_order_items

@@ -7,7 +7,8 @@ from flask import Flask
 from flask_cors import CORS
 from .routes import (
     api_v1_users, api_v1_auth, api_v1_carts, api_v1_products, static_files,
-    api_v1_notifications, api_v1_admin, api_v1_orders, api_v1_order_addresses
+    api_v1_notifications, api_v1_admin, api_v1_orders, api_v1_order_addresses,
+    api_v1_order_items
 )
 from .database import db
 from sqlalchemy import event
@@ -54,12 +55,13 @@ def create_app(config_override: dict | None = None):
     app.register_blueprint(api_v1_notifications)
     app.register_blueprint(api_v1_orders)
     app.register_blueprint(api_v1_order_addresses)
+    app.register_blueprint(api_v1_order_items)
     app.register_blueprint(static_files)
 
     # DB
     db.init_app(app)
     with app.app_context():
-        from .database.models import User, Cart, CartProduct, Product, Notification, Orders, OrderAddresses
+        from .database.models import User, Cart, CartProduct, Product, Notification, Orders, OrderAddresses, OrderItems
         db.create_all()
 
     # Uploads Folder (usable prod and test)
