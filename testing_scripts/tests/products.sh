@@ -50,76 +50,12 @@ function test_create_one_product_auto() {
         -F "price=100000000" \
         -F "tags=art,antique" \
         -F "quantity=2" \
+        -F "sku=ref$test_product_name" \
         -F "file=@$filename_path"
 
     response_code_and_jq_body "$http_code" 201 "created successfully"
 }
-
-# shellcheck enable=all 
-function test_create_two_product_auto(){
- echo -e "${YELLOW}🚀 Test: create the La Jeune Fille à la perle test product (auto) ${NO_COLOR}"
-    local test_product_name="$1"
-
-    echo -e "${YELLOW}🚀 Test: create product $test_product_name (auto) ${NO_COLOR}"
-    filename_path="${BASE_DIR}/../../testing_images/products/$test_product_name"
-
-    if [ ! -f "$filename_path" ]; then
-        echo -e "${RED}❌ File not found: $filename${NO_COLOR}"
-        exit 1
-    fi
-
-    curl_with_cookie_code http://localhost:5000/api/v1/products/ \
-        -X POST \
-        -H "Content-Type: multipart/form-data" \
-          -F "name=$test_product_name" \
-        -F "description=Testing Description" \
-        -F "price=200000000" \
-        -F "tags=art,antique" \ 
-        -F "quantity=1" \
-        -F "file=@$filename_path"
-
-    if [[ "$http_code" -eq 201 ]]; then
-        echo -e "${GREEN}✅ Product created successfully${NO_COLOR}"
-        echo "$body" | jq .
-    else
-        echo -e "${RED}❌ Failed to create product (HTTP $http_code)${NO_COLOR}"
-        echo "$body" | jq .
-        exit 1
-    fi
-}
  
-function test_create_three_product_auto(){
- echo -e "${YELLOW}🚀 Test: create the La naissance de Vénus test product (auto) ${NO_COLOR}"
-    local test_product_name="$1"
-    
-    echo -e "${YELLOW}🚀 Test: create product $test_product_name (auto) ${NO_COLOR}"
-    filename_path="${BASE_DIR}/../../testing_images/products/$test_product_name"
-
-    if [ ! -f "$filename_path" ]; then
-        echo -e "${RED}❌ File not found: $filename${NO_COLOR}"
-        exit 1
-    fi
-
-    curl_with_cookie_code http://localhost:5000/api/v1/products/ \
-        -X POST \
-        -H "Content-Type: multipart/form-data" \
-        -F "name=$test_product_name" \
-        -F "description=Testing Description" \
-        -F "price=300000000" \
-        -F "tags=art,antique" \
-        -F "quantity=1" \
-        -F "file=@$filename_path"
-
-    if [[ "$http_code" -eq 201 ]]; then
-        echo -e "${GREEN}✅ Product created successfully${NO_COLOR}"
-        echo "$body" | jq .
-    else
-        echo -e "${RED}❌ Failed to create product (HTTP $http_code)${NO_COLOR}"
-        echo "$body" | jq .
-        exit 1
-    fi
-}
-
 # ➡️ Create one product manually
 
 function test_create_one_product(){
@@ -130,7 +66,7 @@ function test_create_one_product(){
     read -p "$(echo -e ${CYAN}Tags:${NO_COLOR} ) " tags
     read -p "$(echo -e ${CYAN}Quantity:${NO_COLOR} ) " quantity
     read -p "$(echo -e ${CYAN}File path:${NO_COLOR} ) " filename
-
+    read -p "$(echo -e ${CYAN}sku=${NO_COLOR} ) " sku
     filename_path="${BASE_DIR}/../../testing_images/products/${filename}"
 
     if [ ! -f "$filename_path" ]; then
@@ -146,6 +82,7 @@ function test_create_one_product(){
         -F "price=$price" \
         -F "tags=$tags" \
         -F "quantity=$quantity" \
+        -F "sku=ref$name" \
         -F "file=@$filename_path"
 
     response_code_and_jq_body "$http_code" 201 "created successfully"

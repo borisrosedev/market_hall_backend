@@ -101,4 +101,5 @@ function test_create_order_adresses(){
 #test_file_upload_image_type
 
 #test_create_order
-test_create_order_adresses
+#test_create_order_adresses
+#gtest_create_product_camera1
