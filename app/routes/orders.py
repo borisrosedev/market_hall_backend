@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 from flask import Blueprint, request, jsonify, session
 from ..database import db 
-from ..database.models import  Orders
-from ..services import test_info_request
+from ..database.models import User, Orders
+from ..services import test_info_request,session_required,admin_required_with_exceptions
 
 
 api_v1_orders = Blueprint("api_v1_orders", __name__,url_prefix="/api/v1/orders")
@@ -20,9 +20,14 @@ def update_get_or_delete_order(order_id):
         order = db.session.execute(db.select(Orders).filter_by(id=order_id )).scalar()
         if not order:
             return jsonify(message="order not found"), 404
-        #test_info_request(request) 
+        
         data = request.get_json()
-        user_id = data.get('user_id') 
+        user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        current_user =user.to_dict()
+        if not current_user:
+            return jsonify(message="invalid user data"), 400 
+        
+        user_id =  current_user['id']   
         amounts_cents= data.get('amounts_cents')  
         currency= data.get('currency')
         status = data.get('status') 
@@ -56,14 +61,21 @@ def update_get_or_delete_order(order_id):
  
 
 @api_v1_orders.route("/", methods=["POST", "GET"])
+#@session_required 
 def get_all_or_create_order():
-    """ GET ALL ORDERS OR CREATE A ORDER """
+    """ GET ALL ORDERS OR CREATE A ORDER """  
     if request.method == "GET": 
         orders = db.session.execute(db.select(Orders).order_by(Orders.id)).scalars()
         return jsonify(orders=[order.to_dict() for order in orders])
     else: 
         data = request.get_json()
-        user_id =  data.get('user_id')
+
+        user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        current_user =user.to_dict()
+        if not current_user:
+            return jsonify(message="invalid user data"), 400 
+        
+        user_id =  current_user['id'] # data.get('user_id')
         amounts_cents =data.get('amounts_cents')
         currency = data.get('currency')
         status = data.get('status') 
