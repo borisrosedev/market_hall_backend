@@ -23,7 +23,7 @@ function test_get_all_order_addresse(){
  
 
 function test_get_all_order_addresses(){
-    echo -e "${YELLOW}🚀 Test: get all orders ${NO_COLOR}"
+    echo -e "${YELLOW}🚀 Test: get all order addresses ${NO_COLOR}"
     STATUS_CODE=$(curl -s -o response.json -w "%{http_code}" http://127.0.0.1:5000/api/v1/order_addresses/ -X GET)
     # -s deletes progress bar and error messages for the output to be clean
     # -o sends response body into /dev/null instead of outputting it in the screen (console)
@@ -39,7 +39,7 @@ function test_get_all_order_addresses(){
 
  
 function test_create_one_order_addresse_auto(){
-    echo -e "${YELLOW}🚀 Test: create order (auto) ${NO_COLOR}"
+    echo -e "${YELLOW}🚀 Test: create order addresse (auto) ${NO_COLOR}"
      
 
     curl_with_cookie_code http://127.0.0.1:5000/api/v1/order_addresses/ \
@@ -52,7 +52,7 @@ function test_create_one_order_addresse_auto(){
         echo -e "${GREEN}✅ Order created successfully${NO_COLOR}"
         echo "$body" | jq .
     else
-        echo -e "${RED}❌ Failed to create order (HTTP $http_code)${NO_COLOR}"
+        echo -e "${RED}❌ Failed to create order addresse (HTTP $http_code)${NO_COLOR}"
         echo "$body" | jq .
         exit 1
     fi
@@ -87,7 +87,7 @@ function test_delete_order_addresse(){
 
 function test_update_one_order_addresse_auto(){
     
-    echo -e "${YELLOW}🚀 Test: update order (auto) ${NO_COLOR}"
+    echo -e "${YELLOW}🚀 Test: update order addresse (auto) ${NO_COLOR}"
       
     curl_with_cookie_code http://localhost:5000/api/v1/order_addresses/1 \
         -X PUT \
