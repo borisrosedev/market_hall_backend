@@ -1,0 +1,7 @@
+.github
+.venv
+.dockerignore
+.gitignore
+.shellcheckrc
+*.sql
+*.db
