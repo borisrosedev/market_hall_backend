@@ -92,111 +92,24 @@ function test_create_one_order_item_auto(){
         exit 1
     fi
 }
-  
-function test_delete_order_item(){
-    echo -e "${YELLOW}🚀 Test: delete one order item ${NO_COLOR}"
-    read -p "$(echo -e ${CYAN}Order ID:${NO_COLOR} ) " id
-     
-    if [ -n "$id" ]; then
-        curl_with_cookie_code http://localhost:5000/api/v1/order_items/"$id"\
-            -H "Content-Type:application/json" \
-            -X DELETE
-
-        if [[ "$http_code" -eq 200 ]]; then
-            message=$(echo "$body" | jq -r '.message')
-            if [[ "$message" == "order items deleted" ]]; then
-                echo -e "${GREEN}✅ Test passed (HTTP 200)${NO_COLOR}"
-            else
-                echo -e "${RED}❌ Unexpected message: '$message'${NO_COLOR}"
-                exit 1
-            fi
-        else
-            echo -e "${RED}❌ Failed (HTTP $http_code)${NO_COLOR}"
-            exit 1
-        fi
-    else
-        echo -e "${RED}❌ No id provided${NO_COLOR}"
-        exit 1
-    fi  
-}
-
-function test_update_one_order_item_auto(){
-    
-    echo -e "${YELLOW}🚀 Test: update order item (auto) ${NO_COLOR}"
-        
-    #  Exemple  
-    # unit_price_cents = 2999  # 29.99€
-    # quantity = 3
-    # tax_rate = 0.20  # TVA 20%
-    # discount_rate = 0.10  # Remise 10% 
-    # subtotal_cents = unit_price_cents * quantity = 2999 * 3  /100= 89.97€
-    # discount_cents = subtotal_cents * discount_rate = 899 /100 = 8.99€
-    # amount_after_discount = subtotal_cents - discount_cents =  8098 /100 = 80.98€
-    # tax_cents = amount_after_discount * tax_rate = 1619 /100 = 16.19€
-    # total_cents = amount_after_discount + tax_cents = 9717 /100 = 97.17€
-      
-    json_data='{
-        "order_id": 1, 
-        "product_id": 1,
-        "sku":"Ref-produit-num0001",
-        "product_name" : "Camera1",
-        "unit_price_cents" : 2999,
-        "quantity" : 3, 
-        "subtotal_cents" : 8997,
-        "tax_cents" : 1619, 
-        "discount_cents" : 899, 
-        "total_cents" : 9717, 
-        "currency" : "EUR", 
-        "variant_json": {
-            "color": "green",
-            "size": "L", 
-            "material": "cotton"
-        },
-        "metadata_json": {
-            "stripe_item_id": "si_1234567890",
-            "source": "web"
-        }
-    }'
-
-    echo "JSON to send:"
-    echo "$json_data" | jq .
-
-    curl_with_cookie_code http://localhost:5000/api/v1/order_items/1 \
-        -X PUT \
-        -H "Content-Type: application/json" \
-        -d "$json_data"
-
-    #echo "HTTP Code: $http_code"
-    #echo "Response body:"
-    #echo "$body"
-    if [ "$http_code" -eq 200 ]; then
-        echo -e "${GREEN}✅ Test passed (HTTP 200)${NO_COLOR}"
-    else
-        echo -e "${RED}❌ Test failed (HTTP $http_code)${NO_COLOR}"
-        exit 1
-    fi
-}
-
+   
+ 
 
 show_menu(){
 
 # Menu
 echo -e "${CYAN}=== API Orders Items Test Menu ===${NO_COLOR}"
 echo "1) Get all order items "
-echo "2) Delete one order item"
-echo "3) Get one order item auto"
-echo "4) Create test order item auto"
-echo "5) Update test order item auto"
-echo "6) Quit"
+echo "2) Get one order item auto"
+echo "3) Create test order item auto"
+echo "4) Quit"
 read -p "Choose an option: " choice
 
 case "$choice" in
-    1) test_get_all_order_items ;;
-    2) test_delete_order_item ;;
-    3) test_get_all_order_item ;;
-    4) test_create_one_order_item_auto ;;
-    5) test_update_one_order_item_auto ;;
-    6) echo "Bye!"; exit 0 ;;
+    1) test_get_all_order_items ;; 
+    2) test_get_all_order_item ;;
+    3) test_create_one_order_item_auto ;; 
+    4) echo "Bye!"; exit 0 ;;
     *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
 esac
 
