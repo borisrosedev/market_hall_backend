@@ -4,7 +4,7 @@ from pathlib import Path
 from sqlite3 import IntegrityError
 from flask import Blueprint, request, jsonify, session
 from ..database import db 
-from ..database.models import OrderItems,  Orders, Product 
+from ..database.models import OrderItem,  Order, Product 
 from ..services import test_info_request,session_required
  
 api_v1_order_items = Blueprint("api_v1_order_items", __name__,url_prefix="/api/v1/order_items")
@@ -17,7 +17,7 @@ def update_get_or_delete_order_items(order_items_id):
     if request.method in ("PUT", "DELETE"):
         return jsonify(message="operation not authorized on order items"), 200    
     elif request.method == "GET":
-        order_items =  db.session.execute(db.select(OrderItems).filter_by(id=order_items_id )).scalar()
+        order_items =  db.session.execute(db.select(OrderItem).filter_by(id=order_items_id )).scalar()
         if not order_items:
             return jsonify(message="order items not found"), 404
          
@@ -29,14 +29,14 @@ def update_get_or_delete_order_items(order_items_id):
 def get_all_or_create_order_items():
     """ GET ALL ORDER ITEMS OR CREATE A ORDER ITEMS"""
     if request.method == "GET": 
-        order_items = db.session.execute(db.select(OrderItems).order_by(OrderItems.id)).scalars()
+        order_items = db.session.execute(db.select(OrderItem).order_by(OrderItem.id)).scalars()
         return jsonify(order_items=[order_item.to_dict() for order_item in order_items])
     else: 
         data = request.get_json() 
         order_id= data.get('order_id') 
         product_id= data.get('product_id') 
         
-        order = db.session.get(Orders, order_id)
+        order = db.session.get(Order, order_id)
         if not order:
             return jsonify(message=f"Order with id {order_id} does not exist"), 400
          
@@ -59,7 +59,7 @@ def get_all_or_create_order_items():
         created_at= data.get('created_at') 
         
         try:
-            order_items = OrderItems( 
+            order_items = OrderItem( 
                 order_id = order_id ,
                 product_id = product_id, 
                 sku = sku ,  
@@ -77,15 +77,15 @@ def get_all_or_create_order_items():
             )
             db.session.add(order_items)
             db.session.commit()
-            return jsonify(message="order items created"), 201
+            return jsonify(message="order item created"), 201
         
         except IntegrityError as e:
             logging.error("Database integrity error: %s", e)
             db.session.rollback()
             return jsonify(message="Invalid data or duplicate entry"), 400
         except Exception as e:
-            logging.error("Error adding order items: %s", e)
+            logging.error("Error adding order item: %s", e)
             db.session.rollback()
-            return jsonify(message="error adding order items"), 500
+            return jsonify(message="error adding order item"), 500
         
     
