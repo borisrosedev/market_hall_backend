@@ -21,9 +21,15 @@ def update_get_or_delete_order(order_id):
         if not order:
             return jsonify(message="order not found"), 404
         
+        #test_info_request(request)
         data = request.get_json()
+        #print (f"email {session["email"]}")
         user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        if user == None :
+            return jsonify(message="invalid user data"), 400
+        #print (f"user {user}")
         current_user =user.to_dict()
+        #print (f"current_user {current_user}")
         if not current_user:
             return jsonify(message="invalid user data"), 400 
         
@@ -70,12 +76,19 @@ def get_all_or_create_order():
     else: 
         data = request.get_json()
 
-        #user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        #current_user =user.to_dict()
-        #if not current_user:
-        #    return jsonify(message="invalid user data"), 400 
+         
+        #test_info_request(request)
+        #print (f"email {session["email"]}")
+        user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
+        if user == None :
+            return jsonify(message="invalid user data"), 400 
         
-        user_id = data.get('user_id')
+        current_user =user.to_dict() 
+        if not current_user:
+            return jsonify(message="invalid user data"), 400 
+        
+        user_id =  current_user['id'] 
+        #user_id = data.get('user_id')
         amounts_cents =data.get('amounts_cents')
         currency = data.get('currency')
         status = data.get('status') 

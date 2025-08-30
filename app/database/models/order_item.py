@@ -10,13 +10,13 @@ class OrderItem(db.Model):
     __tablename__ = "order_items"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
     order_id: Mapped[int] = mapped_column(
-        ForeignKey("order.id", ondelete="CASCADE"), 
+        ForeignKey("orders.id", ondelete="CASCADE"), 
         unique=False,          
         index=True,
         nullable=False,
         ) 
     product_id: Mapped[int] = mapped_column(
-        ForeignKey("product.id", ondelete="CASCADE"), 
+        ForeignKey("products.id", ondelete="CASCADE"), 
         unique=False,          
         index=True,
         nullable=False,
