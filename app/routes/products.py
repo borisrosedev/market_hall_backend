@@ -41,7 +41,7 @@ def get_all_delete_all_or_create_product(unique_name:str=None):
     sku= request.form.get('sku')
     file = request.files["file"]
     file.save(os.path.join(UPLOAD_FOLDER, unique_name))
-    test_info_request(request)
+    #test_info_request(request)
     try:
         product = Product(
             description=description,
