@@ -12,7 +12,7 @@ class OrderAddresse(db.Model):
     __tablename__ = "order_addresses"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
     order_id: Mapped[int] = mapped_column(
-        ForeignKey("order.id", ondelete="CASCADE"),
+        ForeignKey("orders.id", ondelete="CASCADE"),
         unique=False,          
         index=True,
         nullable=False,
