@@ -47,7 +47,7 @@ function test_create_one_product_auto() {
         -H "Content-Type: multipart/form-data" \
         -F "name=$test_product_name" \
         -F "description=Testing Description" \
-        -F "price=100000000" \
+        -F "price_cents=100000000" \
         -F "tags=art,antique" \
         -F "quantity=2" \
         -F "sku=ref$test_product_name" \
@@ -62,7 +62,7 @@ function test_create_one_product(){
     echo -e "${YELLOW}🚀 Test: create one product ${NO_COLOR}"
     read -p "$(echo -e ${CYAN}Name:${NO_COLOR} ) " name
     read -p "$(echo -e ${CYAN}Description:${NO_COLOR} ) " description
-    read -p "$(echo -e ${CYAN}Price:${NO_COLOR} ) " price
+    read -p "$(echo -e ${CYAN}price_cents:${NO_COLOR} ) " price_cents
     read -p "$(echo -e ${CYAN}Tags:${NO_COLOR} ) " tags
     read -p "$(echo -e ${CYAN}Quantity:${NO_COLOR} ) " quantity
     read -p "$(echo -e ${CYAN}File path:${NO_COLOR} ) " filename
@@ -79,7 +79,7 @@ function test_create_one_product(){
         -H "Content-Type: multipart/form-data" \
         -F "name=$name" \
         -F "description=${description:-Default description}" \
-        -F "price=$price" \
+        -F "price_cents=$price_cents" \
         -F "tags=$tags" \
         -F "quantity=$quantity" \
         -F "sku=ref$name" \
@@ -145,7 +145,7 @@ function test_update_one_product_image_auto(){
         -H "Content-Type: multipart/form-data" \
         -F "name=$product_name" \
         -F "description=Updated Description" \
-        -F "price=500" \
+        -F "price_cents=500" \
         -F "quantity=10" \
         -F "file=@$filename_path"
     

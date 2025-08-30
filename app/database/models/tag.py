@@ -33,7 +33,7 @@ class Tag(db.Model):
                         "id": link.product.id,
                         "name": link.product.name,
                         "photo_name": link.product.photo_name,
-                        "price": link.product.price,
+                        "price_cents": link.product.price_cents,
                     },
                 }
                 for link in self.products_link
