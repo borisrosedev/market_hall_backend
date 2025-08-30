@@ -4,7 +4,7 @@ from .cart_product import CartProduct
 from .product import Product
 from .tag_product import TagProduct
 from .tag import Tag
-from .orders import Orders
-from .order_addresses import OrderAddresses 
-from .order_items import OrderItems
+from .order import Order
+from .order_addresse import OrderAddresse 
+from .order_item import OrderItem
 from .notification import Notification, NotificationStatus
