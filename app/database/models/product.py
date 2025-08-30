@@ -13,8 +13,8 @@ class Product(db.Model):
     published: Mapped[bool] = mapped_column(nullable=False, default=False)
     is_available: Mapped[bool] = mapped_column(default=True, nullable=False)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
-    photo_name: Mapped[str] = mapped_column(nullable=False)
-    price: Mapped[float] = mapped_column(nullable=False)
+    photo_name: Mapped[str] = mapped_column(nullable=False) 
+    price_cents: Mapped[int] = mapped_column(nullable=False)
     quantity: Mapped[int] = mapped_column(nullable=False)
     sku:Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
@@ -40,8 +40,8 @@ class Product(db.Model):
             "published": self.published,
             "is_available": self.is_available,
             "name": self.name,
-            "photo_name": self.photo_name,
-            "price": self.price,
+            "photo_name": self.photo_name, 
+            "price_cents": self.price_cents,
             "quantity": self.quantity,
             "sku":self.sku,
             "created_at": self.created_at,
@@ -56,4 +56,4 @@ class Product(db.Model):
         }
 
     def __repr__(self) -> str:
-        return f"<Product id={self.id} name={self.name!r} description={self.description!r} photo_name={self.photo_name!r} price={self.price} quantity={self.quantity} sku={self.sku}>"
+        return f"<Product id={self.id} name={self.name!r} description={self.description!r} photo_name={self.photo_name!r} price_cents={self.price_cents} quantity={self.quantity} sku={self.sku}>"
