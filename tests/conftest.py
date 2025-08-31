@@ -7,7 +7,7 @@ from typing import Union
 from faker import Faker
 from app import create_app
 from app.database import db as _db
-from app.database.models import User,Cart
+from app.database.models import User,Cart, Order
 
 @pytest.fixture(scope="session")
 def faker():
@@ -17,7 +17,8 @@ def faker():
 def app(tmp_path_factory):
     # temporary uploads folder for tests session
     uploads_dir = tmp_path_factory.mktemp("uploads")
-
+    print ("uploads_dir")
+    print (uploads_dir)
     app = create_app(config_override={
         "TESTING": True,
         # DB sqlite file epheral and isolated
@@ -30,7 +31,7 @@ def app(tmp_path_factory):
 @pytest.fixture()
 def client(app):
     return app.test_client()
-
+ 
 @pytest.fixture(autouse=True)
 def _clean_db(app):
     """
@@ -66,6 +67,27 @@ def make_user(app):
             _db.session.commit()
         return email, password
     return _make_user
+
+@pytest.fixture()
+def make_order(app):
+    """Create a order in db and return id, amounts_cents, currency, status """
+    def _make_order(user_id=1, amounts_cents="10000098", currency="CHN", status="created"):
+        with app.app_context():
+            o = Order(
+                user_id=user_id,
+                amounts_cents=amounts_cents,
+                currency=currency,
+                status=status
+            )
+            o.user_id = user_id
+            o.amounts_cents=amounts_cents
+            o.currency=currency
+            o.status=status
+            _db.session.add(o)
+            _db.session.flush() 
+            _db.session.commit()
+        return  user_id, amounts_cents, currency, status
+    return _make_order
 
 @pytest.fixture()
 def load_json():
