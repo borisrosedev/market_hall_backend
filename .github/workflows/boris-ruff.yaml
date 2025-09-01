@@ -4,6 +4,7 @@ run-name: ${{ github.actor }} running ruff auto-fix
 on:
   push:
     branches:
+      - guillot-dev
       - boris-rose-dev
       - development
   workflow_dispatch:
