@@ -61,7 +61,7 @@ def create_app(config_override: dict | None = None):
     # DB
     db.init_app(app)
     with app.app_context():
-        from .database.models import User, Cart, CartProduct, Product, Notification, Orders, OrderAddresses, OrderItems
+        from .database.models import User, Cart, CartProduct, Product, Notification, Order, OrderAddresse, OrderItem
         db.create_all()
 
     # Uploads Folder (usable prod and test)

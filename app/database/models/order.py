@@ -11,8 +11,7 @@ class StatusOrders(enum.Enum):
     failed = "failed"
 
 
-class Orders(db.Model):
-   
+class Order(db.Model):
     __tablename__ = "orders"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
     user_id: Mapped[int] = mapped_column(
@@ -36,4 +35,4 @@ class Orders(db.Model):
             "created_at": self.created_at,
             }
     def __repr__(self) -> str:
-        return f"<Orders id={self.id} user_id={self.user_id} amounts_cents:{self.amounts_cents} currency{self.currency!r} status{self.status!r}>"
+        return f"<Order id={self.id} user_id={self.user_id} amounts_cents={self.amounts_cents} currency={self.currency!r} status={self.status!r}>"

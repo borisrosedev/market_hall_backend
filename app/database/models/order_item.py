@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import JSON
 from .. import db
  
-class OrderItems(db.Model): 
+class OrderItem(db.Model): 
     __tablename__ = "order_items"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
     order_id: Mapped[int] = mapped_column(
@@ -65,6 +65,6 @@ class OrderItems(db.Model):
             }
        
     def __repr__(self) -> str:
-        return f"<OrderItems id={self.id} order_id={self.order_id} product_id={self.product_id} \
+        return f"<OrderItem id={self.id} order_id={self.order_id} product_id={self.product_id} \
             sku={self.sku}  product_name={self.product_name}  unit_price_cents={self.unit_price_cents}  quantity={self.quantity}  subtotal_cents={self.subtotal_cents}  itax_cents={self.tax_cents} \
             discount_cents={self.discount_cents}  total_cents={self.total_cents}  currency={self.currency}  variant_json={self.variant_json}  metadata_json={self.metadata_json}  created_at={self.created_at}  >"  

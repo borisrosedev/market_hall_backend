@@ -4,6 +4,7 @@ run-name: ${{ github.actor }} running boris-pytest
 on:
   push:
     branches:
+      - guillot-dev
       - boris-rose-dev
       - development
 

@@ -9,7 +9,7 @@ function test_get_ById_product(){
 function test_update_product(){
     curl -H "Content-Type:application/json" \
     -X PUT http://localhost:5000/api/v1/products/update/5 \
-    -d '{"name":"test","description":"test","price":100,"quantity":10}'
+    -d '{"name":"test","description":"test","price_cents":100,"quantity":10}'
 }
 
 function test_create_product_camera1(){
@@ -17,7 +17,7 @@ function test_create_product_camera1(){
     -H "Content-Type: multipart/form-data" \
     -F "name=Camera1" \
     -F "description=Testing Description" \
-    -F "price=1000000000" \
+    -F "price_cents=1000000000" \
     -F "tags=painting,art" \
     -F "quantity=1" \
     -F "file=@./testing_images/products/camera-1.jpg"
@@ -29,7 +29,7 @@ function test_create_product_camera2(){
     -H "Content-Type: multipart/form-data" \
     -F "name=Camera2" \
     -F "description=Testing Description" \
-    -F "price=20000" \
+    -F "price_cents=20000" \
     -F "tags=painting,art" \
     -F "quantity=1" \
     -F "file=@./testing_images/products/camera-2.jpg"
@@ -40,7 +40,7 @@ function test_create_product_pocket-watch(){
     -H "Content-Type: multipart/form-data" \
     -F "name=Pocket watch" \
     -F "description=Testing Description" \
-    -F "price=5240000" \
+    -F "price_cents=5240000" \
     -F "tags=painting,art" \
     -F "quantity=1" \
     -F "file=@./testing_images/products/pocket-watch-1.jpg"

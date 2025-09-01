@@ -8,7 +8,7 @@ class TypeOrderAddresses(enum.Enum):
     shipping = "shipping"
     billing = "billing"
     
-class OrderAddresses(db.Model): 
+class OrderAddresse(db.Model): 
     __tablename__ = "order_addresses"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
     order_id: Mapped[int] = mapped_column(
@@ -41,5 +41,5 @@ class OrderAddresses(db.Model):
             }
        
     def __repr__(self) -> str:
-        return f"<OrderAddresses id={self.id} order_id={self.order_id} type{self.type!r} full_name={self.full_name} line1={self.line1} line2={self.line2} \
+        return f"<OrderAddresse id={self.id} order_id={self.order_id} type{self.type!r} full_name={self.full_name} line1={self.line1} line2={self.line2} \
             city={self.city} postal_code={self.postal_code} country={self.country} phone={self.phone}  >"  

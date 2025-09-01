@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.DEBUG)
 @admin_required_with_exceptions(True, "GET")
 @multipart_form_data_with_specific_extension_file_and_keys(
     ["png","jpg","webp", "gif","jpeg"],
-    ["description", "name","price", "quantity", "tags"]
+    ["description", "name","price_cents", "quantity", "tags"]
 )
 @unique_filename_required
 def get_all_delete_all_or_create_product(unique_name:str=None):
@@ -35,20 +35,20 @@ def get_all_delete_all_or_create_product(unique_name:str=None):
     description = request.form.get('description') 
     name = request.form.get('name')
     is_available= request.form.get('is_available') if request.form.get('is_available') else True
-    price= request.form.get('price')
+    price_cents= request.form.get('price_cents')
     tags = request.form.get('tags')
     quantity= request.form.get('quantity')
     sku= request.form.get('sku')
     file = request.files["file"]
     file.save(os.path.join(UPLOAD_FOLDER, unique_name))
-    test_info_request(request)
+    #test_info_request(request)
     try:
         product = Product(
             description=description,
             is_available=is_available, 
             name=name,
             photo_name=unique_name,
-            price=price,
+            price_cents=price_cents,
             quantity=quantity,
             sku=sku,
         )
@@ -98,7 +98,7 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
             description = data.get("description")
             name = data.get("name")
             is_available = data.get("is_available") if "is_available" in data else None
-            price = data.get("price")
+            price_cents = data.get("price_cents")
             tags = data.get("tags")
             quantity = data.get("quantity")
             sku = data.get("sku")
@@ -113,7 +113,7 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
             description = request.form.get("description")
             name = request.form.get("name")
             is_available = request.form.get("is_available") if "is_available" in request.form else None
-            price = request.form.get("price")
+            price_cents = request.form.get("price_cents")
             tags = request.form.get("tags")
             quantity = request.form.get("quantity")
             sku = request.form.get("sku")
@@ -126,10 +126,10 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
             val = to_bool(is_available)
             if val is not None:
                 product.is_available = val
-        if price is not None:
-            val = to_float(price)
+        if price_cents is not None:
+            val = to_float(price_cents)
             if val is not None:
-                product.price = val
+                product.price_cents = val
         if quantity is not None:
             val = to_int(quantity)
             if val is not None:
