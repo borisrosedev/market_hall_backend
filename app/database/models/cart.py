@@ -2,10 +2,6 @@ from typing import List
 from datetime import datetime, timezone
 from sqlalchemy import Integer, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from .cart_product import CartProduct
-from .product import Product
-from .user import User
 from .. import db
 
 class Cart(db.Model):

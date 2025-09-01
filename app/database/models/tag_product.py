@@ -2,8 +2,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Index
 
-from .product import Product
-from .tag import Tag
+ 
 from .. import db
 
 class TagProduct(db.Model):

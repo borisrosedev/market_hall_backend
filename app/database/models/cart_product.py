@@ -1,8 +1,5 @@
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy import ForeignKey, CheckConstraint, Index
-
-from .cart import Cart
-from .product import Product
 from .. import db
 
 

@@ -5,8 +5,7 @@ from sqlalchemy import String, Enum, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .cart import Cart
-from .notification import Notification
+ 
 from .. import db
 
 
