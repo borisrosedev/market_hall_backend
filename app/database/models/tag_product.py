@@ -1,6 +1,8 @@
 # models/tag_product.py
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Index
+
+ 
 from .. import db
 
 class TagProduct(db.Model):

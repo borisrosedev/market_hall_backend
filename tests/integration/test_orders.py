@@ -14,7 +14,6 @@ def test_create_order(client,user_with_order):
     password = data['user'] ["password"]
     
     #id, amounts_cents, currency, status = data_order
-    order_id= data['order'] ["id"]
     amounts_cents= data['order'] ["amounts_cents"]
     currency = data['order'] ["currency"]
     status = data['order'] ["status"] 

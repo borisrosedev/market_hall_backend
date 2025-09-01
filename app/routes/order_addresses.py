@@ -51,11 +51,11 @@ def update_get_or_delete_order_addresses(order_addresse_id):
         
         return jsonify(message="order addresse updated"), 200    
     elif request.method == "GET":
-        order_addresse =  db.session.execute(db.select(OrderAddresse).filter_by(id=order_addresse_id )).scalar()
+        order_addresses =  db.session.execute(db.select(OrderAddresse).filter_by(id=order_addresse_id )).scalar()
         if not order_addresses:
             return jsonify(message="order addresse not found"), 404
          
-        return jsonify(order_addresse=order_addresses.to_dict())
+        return jsonify(order_addresses=order_addresses.to_dict())
     else:
         order_addresses =  db.session.execute(db.select(OrderAddresse).filter_by(id=order_addresse_id )).scalar()
         if not order_addresses:

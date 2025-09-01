@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.associationproxy import association_proxy
+
 from .. import db
 
 class Product(db.Model):

@@ -25,7 +25,7 @@ def update_get_or_delete_order(order_id):
         data = request.get_json()
         #print (f"email {session["email"]}")
         user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        if user == None :
+        if user is None :
             return jsonify(message="invalid user data"), 400
         #print (f"user {user}")
         current_user =user.to_dict()
@@ -80,7 +80,7 @@ def get_all_or_create_order():
         #test_info_request(request)
         #print (f"email {session["email"]}")
         user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        if user == None :
+        if user is None :
             return jsonify(message="invalid user data"), 400 
         
         current_user =user.to_dict() 
