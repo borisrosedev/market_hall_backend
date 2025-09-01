@@ -25,6 +25,7 @@ def app(tmp_path_factory):
         "UPLOAD_FOLDER": uploads_dir,
         "SECRET_KEY": "test-secret",
     })
+    print (tmp_path_factory)
     return app
 
 @pytest.fixture()
