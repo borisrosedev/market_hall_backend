@@ -4,6 +4,9 @@ from datetime import datetime, timezone
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.associationproxy import association_proxy
+
+from .cart_product import CartProduct
+from .tag_product import TagProduct
 from .. import db
 
 class Product(db.Model):

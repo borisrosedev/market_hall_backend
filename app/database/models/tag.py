@@ -3,6 +3,8 @@ from typing import List
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from .tag_product import TagProduct
 from .. import db
 
 class Tag(db.Model):
