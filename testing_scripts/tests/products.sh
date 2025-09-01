@@ -6,6 +6,24 @@ source "$BASE_DIR/../constants/colors.sh"
 source "$BASE_DIR/../utils/curl_utils.sh"
 source "$BASE_DIR/../utils/response_utils.sh"
 
+
+# ➡️ Updated one information 
+
+function test_update_one_product_price_by_id(){
+    echo "=> id: " 
+    read -r id 
+    echo "=> price_cents: "
+    read -r price_cents
+    if [ -n "$id" ] && [ -n "$price_cents" ]; then 
+        curl_with_cookie_code http://localhost:5000/api/v1/products/$id \
+                            -H "Content-Type: application/json" \
+                            -d "{\"price_cents\": \"$price_cents\"}" \
+                            -X PUT
+        response_code "$http_code" 200
+    fi
+}
+
+
 # ➡️ Get one product by 1 
 
 function test_get_one_product_by_id(){
@@ -58,6 +76,7 @@ function test_create_one_product_auto() {
  
 # ➡️ Create one product manually
 
+#shellcheck disable=all
 function test_create_one_product(){
     echo -e "${YELLOW}🚀 Test: create one product ${NO_COLOR}"
     read -p "$(echo -e ${CYAN}Name:${NO_COLOR} ) " name
@@ -164,7 +183,8 @@ echo "3) Create one product"
 echo "4) Create one product (auto) (camera)"
 echo "5) Update Test Product (camera) Image (auto)"
 echo "6) Delete one product (auto) (camera)"
-echo "7) Quit"
+echo "7) Update one product price by id"
+echo "8) Quit"
 read -p "Choose an option: " choice
 
 case "$choice" in
@@ -174,7 +194,8 @@ case "$choice" in
     4) test_create_one_product_auto "camera-1.jpg";;
     5) test_update_one_product_image_auto 1 "pocket-watch.jpg" ;;
     6) test_delete_one_product_auto 1 ;;
-    7) echo "Bye!"; exit 0 ;;
+    7) test_update_one_product_price_by_id ;;
+    8) echo "Bye!"; exit 0 ;;
     *) echo -e "${RED}Invalid choice${NO_COLOR}"; exit 1 ;;
 esac
 
