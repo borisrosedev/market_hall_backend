@@ -10,5 +10,6 @@ __pycache__/
 # Virtual environment
 .venv
 .env
+.volumes/*
 instance
 testing_images/ 

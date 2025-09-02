@@ -3,5 +3,7 @@
 .dockerignore
 .gitignore
 .shellcheckrc
+.volumes/*
 *.sql
 *.db
+
