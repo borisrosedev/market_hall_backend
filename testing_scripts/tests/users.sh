@@ -87,12 +87,17 @@ function test_create_one_user {
     echo -e "${YELLOW}🚀 Test: create a user ${NO_COLOR}"
     echo -e "${CYAN}What is the email of the new user?${NO_COLOR}"
     read email
+    echo -e "${CYAN}What is the firstname of the new user?${NO_COLOR}"
+    read firstname
+    echo -e "${CYAN}What is the lastname of the new user?${NO_COLOR}"
+    read lastname
+
 
     if [ -n "$email" ]; then
         curl_with_code "http://localhost:5000/api/v1/users/" \
             -H "Content-Type:application/json" \
             -X POST \
-            -d "{\"firstname\":\"Susie\",\"lastname\":\"Bernard\",\"email\":\"$email\",\"password\":\"caroline123\"}"
+            -d "{\"firstname\":\"$firstname\",\"lastname\":\"$lastname\",\"email\":\"$email\",\"password\":\"caroline123\"}"
 
         response_code_and_message "$http_code" "$body" 201 "user created with a cart" 
     else
