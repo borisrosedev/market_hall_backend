@@ -65,8 +65,29 @@ def make_user(app):
             cart = Cart(user_id=u.id)
             _db.session.add(cart)
             _db.session.commit()
-        return email, password
+        return email, password,
     return _make_user
+
+
+@pytest.fixture()
+def make_admin_id(app):
+    def _make_admin_id(email="admin_boris@gmail.com", password="caroline123", firstname="boris", lastname="shang"):
+        with app.app_context():
+            u = User(
+                email=email,
+                firstname=firstname,
+                lastname=lastname,
+                role="admin"
+            )
+            u.password = password
+            _db.session.add(u)
+            _db.session.flush() 
+            cart = Cart(user_id=u.id)
+            _db.session.add(cart)
+            _db.session.commit()
+            id = u.id
+        return id, email, password
+    return _make_admin_id
 
 @pytest.fixture()
 def make_user_id(app):
