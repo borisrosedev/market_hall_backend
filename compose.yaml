@@ -52,7 +52,7 @@ services:
         condition: service_healthy
         restart: true
     working_dir: /app
-    command: bash run_flask.sh # scripts/prestart.sh  
+    command: bash scripts/prestart.sh  # Script qui fait SEULEMENT les migrations
     env_file:
       - .env
     environment:
@@ -103,3 +103,4 @@ services:
 
 volumes:
   pgdata:
+  
