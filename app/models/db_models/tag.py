@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from sqlmodel import Field, Relationship
 from sqlalchemy import UniqueConstraint
 from ..non_db_models.tag import TagBase
+from typing import List,Optional
 
 #if TYPE_CHECKING:
 from .tag_product import TagProduct
@@ -18,7 +19,7 @@ class Tag(TagBase, table=True):
         UniqueConstraint("name", name="uq_tags_name"), 
     )
 
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: Optional[uuid.UUID] = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str = Field(index=True, max_length=64)
 
     created_at: datetime = Field(

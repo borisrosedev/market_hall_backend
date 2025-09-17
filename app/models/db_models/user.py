@@ -9,7 +9,8 @@ from sqlmodel import Field, Relationship
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String 
 from ..non_db_models.user import UserBase
-from typing import List
+from typing import List,Optional
+from sqlalchemy import Column, DateTime, func 
 #if TYPE_CHECKING:
     #from .cart import Cart
 
@@ -17,7 +18,7 @@ from typing import List
 class User(UserBase, table=True):
     __tablename__ = "users"
 
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: Optional[uuid.UUID] = Field(default_factory=uuid.uuid4, primary_key=True)
 
 
     email: EmailStr = Field(
@@ -39,7 +40,7 @@ class User(UserBase, table=True):
     #         "single_parent": True,        
     #         "cascade": "all, delete-orphan",
     #     },
-    sa_relationship=relationship(
+        sa_relationship=relationship(
             lambda: importlib.import_module(
                 "app.models.db_models.cart"
             ).Cart,
@@ -51,12 +52,11 @@ class User(UserBase, table=True):
     )
 
     created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        nullable=False,
+        sa_column=Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     )
     updated_at: datetime | None = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        nullable=True,
+        default=None,
+        sa_column=Column(DateTime(timezone=True), nullable=True, onupdate=func.now())
     )
     notifications: List['Notification'] = Relationship(back_populates='user')
 

@@ -1,7 +1,7 @@
 
 import uuid
 import importlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 from datetime import datetime, timezone
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship
@@ -13,7 +13,7 @@ from ..non_db_models.order import OrderBase
 
 class Order(OrderBase, table=True):
     __tablename__ = 'orders'
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: Optional[uuid.UUID] = Field(default_factory=uuid.uuid4, primary_key=True)
     
     user_id: uuid.UUID = Field(default=None, 
                             sa_column=Column(PG_UUID(as_uuid=True),

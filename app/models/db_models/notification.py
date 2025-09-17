@@ -17,7 +17,7 @@ from ..non_db_models.notification import NotificationBase
 
 class Notification(NotificationBase, table=True):
     __tablename__ = 'notifications'
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, index=True, primary_key=True)
+    id: Optional[uuid.UUID]= Field(default_factory=uuid.uuid4, index=True, primary_key=True)
     user_id: uuid.UUID = Field(default=None, sa_column=Column(PG_UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), index=True, nullable=True))
     created_at: datetime = Field(sa_type=DateTime(timezone=True), default_factory=func.now, nullable=False)
     read_at: Optional[datetime] = Field(sa_type=DateTime(timezone=True), nullable=True)

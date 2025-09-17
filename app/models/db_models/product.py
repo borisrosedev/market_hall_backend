@@ -1,7 +1,7 @@
 #from __future__ import annotations
 
 import uuid, importlib
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING,Optional
 from datetime import datetime, timezone
 from sqlmodel import Field, Relationship
 from sqlalchemy import Column, ForeignKey
@@ -18,7 +18,7 @@ from .tag_product import TagProduct
 class Product(ProductBase, table=True):
     __tablename__ = "products"
 
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: Optional[uuid.UUID] = Field(default_factory=uuid.uuid4, primary_key=True)
 
     # # a product belongs to one user (vendor / creator)
     # user_id: uuid.UUID = Field(

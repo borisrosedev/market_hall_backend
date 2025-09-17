@@ -11,6 +11,8 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import JSON
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+  
+from sqlalchemy import Column, DateTime, func 
 
 class OrderItemBase(SQLModel):
     sku: str = Field(nullable=False)
@@ -24,4 +26,6 @@ class OrderItemBase(SQLModel):
     currency: str = Field(default='EUR', nullable=False)
     variant_json: Optional[Dict[str, Any]] = Field(default=None, sa_type=JSON, nullable=True)
     metadata_json: Optional[Dict[str, Any]] = Field(default=None, sa_type=JSON, nullable=True)
-    created_at: datetime = Field(default=datetime.now(timezone.utc), nullable=False)
+    created_at: datetime = Field(
+        sa_column=Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    )

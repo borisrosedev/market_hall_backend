@@ -1,7 +1,7 @@
 from sqlmodel import Session, select
 
 from app.models.db_models import __all_models__ 
-
+import uuid
 from app.api.crud.users import create_user
 from app.core.config import settings
 from app.models.db_models.user import User
