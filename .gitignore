@@ -15,3 +15,8 @@ __pycache__/
 instance
 testing_images/ 
 uploads
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
