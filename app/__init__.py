@@ -33,6 +33,7 @@ def create_app(config_override: dict | None = None):
         "UPLOAD_FOLDER": Path(os.getcwd()) / "uploads",
         "PERMANENT_SESSION_LIFETIME": timedelta(minutes=15),
         "SECRET_KEY": os.getenv("SECRET_KEY", "boris-secret"),
+        'SQLALCHEMY_ECHO': True
     })
 
     # Allow tests to clean overide
