@@ -5,6 +5,7 @@ from sqlite3 import IntegrityError
 from flask import Blueprint, request, jsonify, session
 from ....database import db 
 from ....models.db_models.order import Order 
+from ....models.db_models.product import Product 
 from ....models.db_models.order_item import OrderItem
 from ....models.db_models.order_addresse import OrderAddresse
 from ...services.decorators.auth import session_required
