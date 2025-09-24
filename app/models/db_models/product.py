@@ -1,71 +1,60 @@
-#from __future__ import annotations
-
-import uuid, importlib
-from typing import TYPE_CHECKING,Optional
+# models/product.py
+from typing import List
 from datetime import datetime, timezone
-from sqlmodel import Field, Relationship
-from sqlalchemy import Column, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy import String, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.ext.associationproxy import association_proxy
 
-from ..non_db_models.product import ProductBase
+from ...database import db
 
-#if TYPE_CHECKING:
-from .cart_product import CartProduct
-from .tag_product import TagProduct
-
-
-class Product(ProductBase, table=True):
+class Product(db.Model):
     __tablename__ = "products"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column(String(200), nullable=False)
+    published: Mapped[bool] = mapped_column(nullable=False, default=False)
+    is_available: Mapped[bool] = mapped_column(default=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(50), nullable=False)
+    photo_name: Mapped[str] = mapped_column(nullable=False) 
+    price_cents: Mapped[int] = mapped_column(nullable=False)
+    quantity: Mapped[int] = mapped_column(nullable=False)
+    sku:Mapped[str] = mapped_column(nullable=False)
+    created_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    id: Optional[uuid.UUID] = Field(default_factory=uuid.uuid4, primary_key=True)
-
-    # # a product belongs to one user (vendor / creator)
-    # user_id: uuid.UUID = Field(
-    #     default=None,
-    #     sa_column=Column(
-    #         PG_UUID(as_uuid=True),
-    #         ForeignKey("users.id", ondelete="CASCADE"),  
-    #         index=True,
-    #         nullable=True,)
-    # )
-
-    # # points back to the 'products' attribute on User
-    # user = Relationship(
-    #     back_populates="products",
-    #     # sa_relationship_kwargs={"passive_deletes": True},
-    #     sa_relationship=relationship( 
-    #         lambda: importlib.import_module(
-    #             "app.models.db_models.user"
-    #         ).User,
-    #         passive_deletes=True
-    #     )
-    # )
-
-    # many-to-many via association table CartProduct
-    carts_link: list[CartProduct] = Relationship(
+    tag_links: Mapped[List["TagProduct"]] = relationship(
         back_populates="product",
-        sa_relationship_kwargs={
-            "cascade": "all, delete-orphan",
-            "passive_deletes": True,
-        },
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
-    # many-to-many via association table TagProduct
-    tags_link: list[TagProduct] = Relationship(
-        back_populates="product",
-        sa_relationship_kwargs={
-            "cascade": "all, delete-orphan",
-            "passive_deletes": True,
-        },
-    )
+    tags = association_proxy("tag_links", "tag")
 
+    carts_link: Mapped[List["CartProduct"]] = relationship(
+            back_populates="product",
+            passive_deletes=True,
+    )
+    
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "description": self.description,
+            "published": self.published,
+            "is_available": self.is_available,
+            "name": self.name,
+            "photo_name": self.photo_name, 
+            "price_cents": self.price_cents,
+            "quantity": self.quantity,
+            "sku":self.sku,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "tags": [
+                {
+                    "id": link.tag.id,
+                    "name": link.tag.name
+                }
+                for link in self.tag_links
+            ],
+        }
 
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        nullable=False,
-    )
-    updated_at: datetime | None = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        nullable=True,
-    )
+    def __repr__(self) -> str:
+        return f"<Product id={self.id} name={self.name!r} description={self.description!r} photo_name={self.photo_name!r} price_cents={self.price_cents} quantity={self.quantity} sku={self.sku}>"

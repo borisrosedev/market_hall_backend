@@ -1,27 +1,38 @@
-
-import uuid
-import importlib
-from typing import TYPE_CHECKING,Optional
+import enum
+from typing import List
 from datetime import datetime, timezone
-from pydantic import EmailStr
-from sqlmodel import Field, Relationship
-from sqlalchemy.orm import relationship
-from sqlalchemy import Column, String
-from sqlalchemy import ForeignKey
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from ..non_db_models.order import OrderBase
+from sqlalchemy import String, Enum, ForeignKey, func
+from sqlalchemy.orm import Mapped, mapped_column
+from ...database import db
 
-class Order(OrderBase, table=True):
-    __tablename__ = 'orders'
-    id: Optional[uuid.UUID] = Field(default_factory=uuid.uuid4, primary_key=True)
-    
-    user_id: uuid.UUID = Field(default=None, 
-                            sa_column=Column(PG_UUID(as_uuid=True),
-                            ForeignKey('users.id', ondelete='CASCADE'), 
-                            index=True, 
-                            nullable=True))
-    user = Relationship(back_populates='orders'
-                        , sa_relationship=relationship(
-                        lambda: importlib.import_module('app.models.db_models.user').User
-                        , passive_deletes=True))
-    
+class StatusOrders(enum.Enum):
+    created = "created"
+    paid = "paid"
+    failed = "failed"
+
+
+class Order(db.Model):
+    __tablename__ = "orders"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        unique=False,          
+        index=True,
+        nullable=False,
+        ) 
+    amounts_cents: Mapped[int] = mapped_column(nullable=False)
+    currency: Mapped[str] = mapped_column(String(3),default='EUR', nullable=False)
+    status: Mapped[StatusOrders] = mapped_column(Enum(StatusOrders), default=StatusOrders.created)
+    created_at: Mapped[datetime] = mapped_column(db.DateTime(timezone=True), server_default=func.now(), nullable=False)
+   
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "amounts_cents":self.amounts_cents,
+            "currency": self.currency,
+            "status": self.status.value, 
+            "created_at": self.created_at,
+            }
+    def __repr__(self) -> str:
+        return f"<Order id={self.id} user_id={self.user_id} amounts_cents={self.amounts_cents} currency={self.currency!r} status={self.status!r}>"

@@ -1,29 +1,46 @@
+import enum
+from datetime import datetime
+from typing import List, Optional, Dict, Any
+from sqlalchemy import String, Enum, ForeignKey, JSON, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-import uuid
-import importlib
-from typing import TYPE_CHECKING
-from datetime import datetime, timezone
-from pydantic import EmailStr
-from sqlalchemy.orm import relationship
-from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.sql import func
-from typing import Dict, Any, Optional
-from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import JSON, String, Index, DateTime
-from sqlalchemy.sql import func
-from ..non_db_models.notification import NotificationBase
+from ...database import db
 
-class Notification(NotificationBase, table=True):
-    __tablename__ = 'notifications'
-    id: Optional[uuid.UUID]= Field(default_factory=uuid.uuid4, index=True, primary_key=True)
-    user_id: uuid.UUID = Field(default=None, sa_column=Column(PG_UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), index=True, nullable=True))
-    created_at: datetime = Field(sa_type=DateTime(timezone=True), default_factory=func.now, nullable=False)
-    read_at: Optional[datetime] = Field(sa_type=DateTime(timezone=True), nullable=True)
-    user: Optional['User'] = Relationship(back_populates='notifications')
-    __table_args__ = (Index('ix_notifications_user_status_created', 'user_id', 'status', 'created_at'),)
 
+class NotificationStatus(enum.Enum):
+    read = "read"
+    unread = "unread"
+
+class Notification(db.Model):
+    __tablename__ = "notifications"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+    type: Mapped[str] = mapped_column(String(50), nullable=False)
+    payload: Mapped[Dict[str, Any]] = mapped_column(JSON, nullable=False)
+    status: Mapped[NotificationStatus] = mapped_column(
+        Enum(NotificationStatus),
+        default=NotificationStatus.unread,
+        nullable=False,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        db.DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    read_at: Mapped[Optional[datetime]] = mapped_column(
+        db.DateTime(timezone=True), nullable=True
+    )
+    user: Mapped["User"] = relationship(back_populates="notifications")
+    
     def set_read_at(self) -> None:
-        """Mark as read DB-side-wise"""
+        """Marked as read DB-side-wise"""
         self.read_at = func.now()
+
+    __table_args__ = (
+        db.Index(
+            "ix_notifications_user_status_created",
+            "user_id", "status", "created_at"
+        ),
+    )

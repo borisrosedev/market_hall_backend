@@ -1,25 +1,45 @@
+import enum 
+from datetime import datetime
+from sqlalchemy import String, Enum, ForeignKey, func
+from sqlalchemy.orm import Mapped, mapped_column
+from ...database import db
 
-import uuid
-import importlib
-from typing import TYPE_CHECKING, List,Optional
-from datetime import datetime, timezone
-from pydantic import EmailStr
-from sqlmodel import Field, Relationship
-from sqlalchemy.orm import relationship
-from sqlalchemy import Column, String
-from sqlalchemy import ForeignKey
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from ..non_db_models.order_addresse import OrderAddresseBase
-
-class OrderAddresse(OrderAddresseBase, table=True):
-    __tablename__ = 'order_addresses'
-    id: Optional[uuid.UUID] = Field(default_factory=uuid.uuid4, primary_key=True)
-    order_id: uuid.UUID = Field(default=None, sa_column=Column(PG_UUID(as_uuid=True),
-                                                               ForeignKey('orders.id',
-                                                                ondelete='CASCADE'), 
-                                                               index=True, 
-                                                               nullable=True))
-    order = Relationship(back_populates='orders'
-                        , sa_relationship=relationship(
-                        lambda: importlib.import_module('app.models.db_models.order').Order,
-                        passive_deletes=True))
+class TypeOrderAddresses(enum.Enum):
+    shipping = "shipping"
+    billing = "billing"
+    
+class OrderAddresse(db.Model): 
+    __tablename__ = "order_addresses"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True) 
+    order_id: Mapped[int] = mapped_column(
+        ForeignKey("orders.id", ondelete="CASCADE"),
+        unique=False,          
+        index=True,
+        nullable=False,
+        ) 
+   
+    type: Mapped[TypeOrderAddresses] = mapped_column(Enum(TypeOrderAddresses) )
+    full_name: Mapped[str] = mapped_column( nullable=False)
+    line1 : Mapped[str] = mapped_column (  nullable=False)  
+    line2 : Mapped[str] = mapped_column (  nullable=True)
+    city : Mapped[str] = mapped_column (  nullable=False) 
+    postal_code : Mapped[str] = mapped_column ( nullable=False)
+    country : Mapped[str] = mapped_column (  nullable=False)
+    phone: Mapped[str] = mapped_column ( nullable=True)
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id ,
+            "order_id": self.order_id,
+            "type" : self.type.value, 
+            "full_name" : self.full_name, 
+            "line1":self.line1,
+            "line2":self.line2,
+            "city": self.city, 
+            "postal_code":self.postal_code,
+            "country":self.country,
+            "phone":self.phone,
+            }
+       
+    def __repr__(self) -> str:
+        return f"<OrderAddresse id={self.id} order_id={self.order_id} type{self.type!r} full_name={self.full_name} line1={self.line1} line2={self.line2} \
+            city={self.city} postal_code={self.postal_code} country={self.country} phone={self.phone}  >"  

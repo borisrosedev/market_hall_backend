@@ -7,7 +7,7 @@ from typing import Union
 from faker import Faker
 from app import create_app
 from app.database import db as _db
-from app.database.models import User,Cart, Order
+from app.database.db_models import User,Cart, Order
 
 @pytest.fixture(scope="session")
 def faker():

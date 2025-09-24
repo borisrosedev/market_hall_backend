@@ -1,78 +1,168 @@
-from typing import Optional, Annotated, Literal, Union, Any
-from enum import StrEnum
-from pydantic import BaseModel, Field
-from datetime import datetime, timezone
-import re, shutil, uuid, logging
+import logging
 import os
-from pathlib import Path as P
-from fastapi import FastAPI, Body, Query, Path, Cookie, Response, status, File, UploadFile, Form, HTTPException, Depends
-from fastapi import APIRouter
-from app.core.config import settings
-from app.models.non_db_models.product import ProductDTOResponse, ProductCreateRequest
-from app.models.non_db_models.message import Message
+from pathlib import Path
+from flask import Blueprint, request, jsonify
+from ...database import db
+from ..utils.type_utils import to_float, to_bool, to_int
+from ..helpers.tags_helper import tags_helper
+from ..services.decorators.auth import admin_required
+from ..services.decorators.file import  unique_filename_required
+from ..services.factories.file import multipart_form_data_with_specific_extension_file_and_keys
+from ..services.factories.auth import admin_required_with_exceptions
+from ..utils.files_utils import delete_file_in_uploads_folder
+from ...models.db_models.cart import Cart
+from ...models.db_models.user import User
+from ...models.db_models.product import Product
 
-from app.api.deps import (
-    CookieCurrentUser,
-    SessionDep,
-    get_current_active_superuser,
-)
-from app.utils import generate_new_account_email, send_email
-from app.api.crud.products import get_all_products, get_one_product_by_id, delete_one_product_by_id, create_one_product
 
+UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
 
-# ----------- CONFIG AND DEBUG -------------
-BASE_DIR = P(__file__).resolve().parent.parent.parent
-UPLOAD_DIR = BASE_DIR / "uploads"
-UPLOAD_DIR.mkdir(exist_ok=True)
+api_v1_products = Blueprint("api_v1_products", __name__,url_prefix="/api/v1/products")
 logging.basicConfig(level=logging.DEBUG)
-# ----------- END OF CONFIG AND DEBUG -------------
 
-api_v1_products = APIRouter(
-    prefix="/products",
-    tags=["products"]
+
+
+
+@api_v1_products.route("/", methods=["POST", "GET"])
+@admin_required_with_exceptions(True, "GET")
+@multipart_form_data_with_specific_extension_file_and_keys(
+    ["png","jpg","webp", "gif","jpeg"],
+    ["description", "name","price_cents", "quantity", "tags"]
 )
+@unique_filename_required
+def get_all_delete_all_or_create_product(unique_name:str=None):
+    """ GET ALL PRODUCTS OR CREATE A PRODUCT """      
+    if request.method == "GET":
+        products = db.session.execute(db.select(Product)).scalars()    
+        return jsonify(products=[product.to_dict() for product in products])
+    if request.method == "DELETE":
+        db.session.query(Product).delete()
+        db.session.commit()
+        return jsonify(message="all products deleted")
+    description = request.form.get('description') 
+    name = request.form.get('name')
+    is_available= request.form.get('is_available') if request.form.get('is_available') else True
+    price_cents= request.form.get('price_cents')
+    tags = request.form.get('tags')
+    quantity= request.form.get('quantity')
+    sku= request.form.get('sku')
+    file = request.files["file"]
+    file.save(os.path.join(UPLOAD_FOLDER, unique_name))
+    #test_info_request(request)
+    try:
+        product = Product(
+            description=description,
+            is_available=is_available, 
+            name=name,
+            photo_name=unique_name,
+            price_cents=price_cents,
+            quantity=quantity,
+            sku=sku,
+        )
+        tags_helper(product=product,tags=tags)
+        db.session.add(product)
+        db.session.commit()
+        return jsonify(message="product created"), 201
+    except Exception as e:
+        logging.error("Error adding product: %s", e)
+        db.session.rollback()
+        return jsonify(message="error adding product"), 500
 
 
-@api_v1_products.get("/{product_id}")
-async def read_one_produc(product_id:uuid.UUID, session:SessionDep):
-    product = get_one_product_by_id(id=product_id,session=session)
+@api_v1_products.route("/<int:product_id>/tags/<int:tag_id>", methods=["DELETE"])
+@admin_required
+def delete_one_product_tag(product_id, tag_id):
+    product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar()
     if not product:
-        raise HTTPException(
-            status_code=404,
-            detail="no product found",
-        )
-    return { "product": product}
+        return jsonify(message="invalid product id"), 400
 
-@api_v1_products.post("/")
-async def create_product(
-    session: SessionDep,
-    name: str = Form(...),
-    description: str = Form(...),
-    price_cents: int = Form(...),
-    sku: str = Form(...),
-    quantity: int = Form(...),
-    file: Optional[UploadFile] = File(None)
-):
-    logging.debug(f"✅ name: {name}, price: {price_cents}, qty: {quantity}, description: {description}")
+    tag = db.session.execute(db.select(Tag).filter_by(id=tag_id)).scalar()
+    if not tag:
+        return jsonify(message="invalid tag id"), 400
 
-    if not file:
-        raise HTTPException(
-            status_code=400,
-            detail="error adding product: no file",
-        )
+    if tag not in product.tags:
+        return jsonify(message=f"product {product_id} does not have tag {tag_id}"), 400
 
-    product_in = {
-        "name": name,
-        "price_cents": price_cents,
-        "sku": sku,
-        "quantity": quantity,
-        "description": description
-    }
+    product.tags.remove(tag)
+    db.session.commit()
 
-    new_product = create_one_product(session=session, product_create=product_in, uploaded_file=file)
-    if not new_product:
-        raise HTTPException(
-            status_code=400,
-            detail="error adding product",
-        )
-    return {"message": "product created"}
+    return jsonify(message="tag removed"), 200
+
+@api_v1_products.route("/<int:product_id>", methods=["DELETE", "GET", "PUT", "PATCH"])
+@admin_required_with_exceptions(True, "GET")
+@unique_filename_required
+def get_update_delete_one_product(product_id, unique_name: str = None):
+    if request.method in ("PUT", "PATCH"):
+        product = db.session.execute(
+            db.select(Product).filter_by(id=product_id)
+        ).scalar_one_or_none()
+        if not product:
+            return jsonify(message="product not found"), 404
+
+
+        if request.is_json:
+            data = request.get_json()
+            description = data.get("description")
+            name = data.get("name")
+            is_available = data.get("is_available") if "is_available" in data else None
+            price_cents = data.get("price_cents")
+            tags = data.get("tags")
+            quantity = data.get("quantity")
+            sku = data.get("sku")
+        else:
+            if unique_name:
+                if isinstance(product.photo_name, str):
+                    delete_file_in_uploads_folder(product.photo_name)
+                product.photo_name = unique_name
+                file = request.files["file"]
+                file.save(os.path.join(UPLOAD_FOLDER, unique_name))
+
+            description = request.form.get("description")
+            name = request.form.get("name")
+            is_available = request.form.get("is_available") if "is_available" in request.form else None
+            price_cents = request.form.get("price_cents")
+            tags = request.form.get("tags")
+            quantity = request.form.get("quantity")
+            sku = request.form.get("sku")
+
+        if description is not None:
+            product.description = description
+        if name is not None:
+            product.name = name
+        if is_available is not None:
+            val = to_bool(is_available)
+            if val is not None:
+                product.is_available = val
+        if price_cents is not None:
+            val = to_float(price_cents)
+            if val is not None:
+                product.price_cents = val
+        if quantity is not None:
+            val = to_int(quantity)
+            if val is not None:
+                product.quantity = val
+        if sku is not None:
+            val = to_int(sku)
+            if val is not None:
+                product.sku = val        
+        if tags is not None:
+           tags_helper(product=product, tags=tags)
+
+        db.session.commit()
+        return jsonify(message="product updated"), 200
+
+    if request.method == "GET":
+        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar_one_or_none()
+        if not product:
+            return jsonify(message="product not found"), 404
+        return jsonify(product=product.to_dict())
+
+    if request.method == "DELETE":
+        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar_one_or_none()
+        if not product:
+            return jsonify(message="product not found"), 404
+        if isinstance(product.photo_name, str):
+            delete_file_in_uploads_folder(product.photo_name)
+        db.session.delete(product)
+        db.session.commit()
+        return jsonify(message="product deleted")

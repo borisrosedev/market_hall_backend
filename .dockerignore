@@ -7,3 +7,8 @@
 *.sql
 *.db
 
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
