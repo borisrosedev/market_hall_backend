@@ -14,7 +14,7 @@ __pycache__/
 .log/*
 instance
 testing_images/ 
-uploads
+
 
 .env*
 .flaskenv*
