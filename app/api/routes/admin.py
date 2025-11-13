@@ -37,7 +37,22 @@ def update_user_profile(user_id):
     return jsonify(message=f"user {user_id} updated")
 
 
-@api_v1_admin.route("/products/<int:product_id>/publish", methods=["POST"])
+@api_v1_admin.route("/products/<int:product_id>/unpublish", methods=["GET"])
+@admin_required
+def unpublish_product(product_id):
+    product = db.session.get(Product, product_id)
+    if not product:
+        return jsonify(message="product not found"), 404
+
+    product.published = False
+
+    db.session.commit()
+
+    return jsonify(message=f"product with id: {product.id} unpublished")
+
+
+
+@api_v1_admin.route("/products/<int:product_id>/publish", methods=["GET"])
 @admin_required
 def publish_product(product_id):
     """ publish a product and sse-notify it and db-batch-notify-it """
@@ -45,7 +60,7 @@ def publish_product(product_id):
     if not product:
         return jsonify(message="product not found"), 404
 
-    product.status = "published"
+    product.published = True
 
     db.session.commit()
 
