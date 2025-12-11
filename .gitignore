@@ -20,3 +20,4 @@ testing_images/
 .flaskenv*
 !.env.project
 !.env.vault
+notes.cmd
