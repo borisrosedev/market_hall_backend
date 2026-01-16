@@ -53,6 +53,7 @@ function test_create_one_product_auto() {
     local test_product_name="$1"
 
     echo -e "${YELLOW}🚀 Test: create product $test_product_name (auto) ${NO_COLOR}"
+    
     filename_path="${BASE_DIR}/../../testing_images/products/$test_product_name"
 
     if [ ! -f "$filename_path" ]; then
@@ -86,7 +87,8 @@ function test_create_one_product(){
     read -p "$(echo -e ${CYAN}Quantity:${NO_COLOR} ) " quantity
     read -p "$(echo -e ${CYAN}File path:${NO_COLOR} ) " filename
     read -p "$(echo -e ${CYAN}sku=${NO_COLOR} ) " sku
-    filename_path="${BASE_DIR}/../../testing_images/products/${filename}"
+    #  filename_path="${BASE_DIR}/../../   testing_images/products/${filename}"
+    filename_path="../testing_images/products/${filename}" #changé ce path pour viser une image spécifique  
 
     if [ ! -f "$filename_path" ]; then
         echo -e "${RED}❌ File not found: $filename${NO_COLOR}"

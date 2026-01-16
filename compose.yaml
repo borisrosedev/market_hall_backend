@@ -13,7 +13,7 @@ services:
       retries: 20
   db:
     container_name: postgres
-    image: postgres:latest
+    image: postgres:16-alpine # postgres:16-alpine  # Au lieu de postgres:latest pour les versions 
     env_file:
       - .env
     environment:
@@ -72,8 +72,8 @@ services:
     networks:
       - default
     depends_on:
-      prestart:
-        condition: service_completed_successfully
+      db:
+       condition: service_healthy #
     working_dir: /app
     env_file:
       - .env

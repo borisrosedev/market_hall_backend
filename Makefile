@@ -24,6 +24,9 @@ testv2: ## shows the menu of API Test
 # 	@find testing_scripts -maxdepth 1 -type f -exec chmod u+x {} +
 	@./testing_scripts/index.sh
 
+# test la base de donnée 
+check_db: ##  checks la fichier check_db.py à la racine du projet
+	@python check_db.py
 
 carts: ## runs carts testing
 	@chmod u+x $(CART_TESTS_FILE)
