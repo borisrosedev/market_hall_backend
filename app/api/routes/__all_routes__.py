@@ -6,5 +6,5 @@ from .files import static_files
 from .notifications import api_v1_notifications
 from .admin import api_v1_admin
 from .orders_routes.orders import api_v1_orders
-from .orders_routes.order_addresses import api_v1_order_addresses 
+from .orders_routes.order_addresses import api_v1_order_addresses
 from .orders_routes.order_items import api_v1_order_items

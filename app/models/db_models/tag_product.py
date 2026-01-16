@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Index
 from ...database import db
 
+
 class TagProduct(db.Model):
     __tablename__ = "tag_products"
 

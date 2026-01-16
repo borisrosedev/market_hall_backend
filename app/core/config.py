@@ -15,15 +15,17 @@ from pydantic import (
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing_extensions import Self
-BASE_DIR = Path(__file__).resolve().parents[2] 
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+
 
 def parse_cors(v: Any) -> list[str] | str:
     """
-        helper when .env cors tuple/list value is to be used
+    helper when .env cors tuple/list value is to be used
     """
     if isinstance(v, str) and not v.startswith("["):
         return [i.strip() for i in v.split(",")]
-    elif isinstance(v, (list, str)): 
+    elif isinstance(v, (list, str)):
         return v
     raise ValueError(v)
 
@@ -39,14 +41,14 @@ class Settings(BaseSettings):
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     FRONTEND_HOST: str = "http://localhost:5173"
-    ENVIRONMENT: Literal["local", "staging", "production","development"] = "local" 
+    ENVIRONMENT: Literal["local", "staging", "production", "development"] = "local"
 
     COOKIE_NAME: str = "session"
-    COOKIE_SECURE: bool = False   
-    COOKIE_SAMESITE: Literal["lax","strict","none"] = "lax"
-    COOKIE_DOMAIN: Optional[str] = None 
+    COOKIE_SECURE: bool = False
+    COOKIE_SAMESITE: Literal["lax", "strict", "none"] = "lax"
+    COOKIE_DOMAIN: Optional[str] = None
     COOKIE_PATH: str = "/"
-        
+
     BACKEND_CORS_ORIGINS: Annotated[Union[list[str], str], BeforeValidator(parse_cors)] = []
 
     @computed_field  # type: ignore[prop-decorator]
@@ -83,7 +85,7 @@ class Settings(BaseSettings):
     SMTP_USER: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
     EMAILS_FROM_EMAIL: Optional[EmailStr] = "test_markethall@gmail.com"
-    EMAILS_FROM_NAME: Optional[str] = "test_boris" 
+    EMAILS_FROM_NAME: Optional[str] = "test_boris"
 
     @model_validator(mode="after")
     def _set_default_emails_from(self) -> Self:
@@ -117,9 +119,7 @@ class Settings(BaseSettings):
     def _enforce_non_default_secrets(self) -> Self:
         self._check_default_secret("SECRET_KEY", self.SECRET_KEY)
         self._check_default_secret("POSTGRES_PASSWORD", self.POSTGRES_PASSWORD)
-        self._check_default_secret(
-            "FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD
-        )
+        self._check_default_secret("FIRST_SUPERUSER_PASSWORD", self.FIRST_SUPERUSER_PASSWORD)
 
         return self
 

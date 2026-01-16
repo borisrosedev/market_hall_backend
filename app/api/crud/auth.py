@@ -15,9 +15,3 @@ def authenticate(*, session: Session, email: str, password: str) -> Optional[Use
     if not verify_password(password, db_user.password_hash):
         return None
     return db_user
-
-
-
-
-
-

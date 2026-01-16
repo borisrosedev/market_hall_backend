@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 
 def _extract_user_fields(obj: Any) -> tuple[Optional[str], Optional[str], Optional[str]]:
-
     # Dict-like
     if isinstance(obj, dict):
         uid = obj.get("user_id") or obj.get("id")
@@ -37,7 +36,6 @@ def _extract_user_fields(obj: Any) -> tuple[Optional[str], Optional[str], Option
     return (None, None, None)
 
 
-
 def create_access_token(subject: Any, expires_delta: timedelta) -> str:
     now = datetime.now(timezone.utc)
     exp = now + expires_delta
@@ -47,7 +45,7 @@ def create_access_token(subject: Any, expires_delta: timedelta) -> str:
         user_id = str(subject)
 
     claims = {
-        "sub": user_id,                         
+        "sub": user_id,
         "iat": int(now.timestamp()),
         "nbf": int(now.timestamp()),
         "exp": int(exp.timestamp()),
@@ -61,8 +59,6 @@ def create_access_token(subject: Any, expires_delta: timedelta) -> str:
         }
 
     return jwt.encode(claims, settings.SECRET_KEY, algorithm=ALGORITHM)
-
-
 
 
 def verify_password(plain_password: str, password_hash: str) -> bool:

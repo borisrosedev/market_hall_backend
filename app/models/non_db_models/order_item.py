@@ -1,4 +1,3 @@
-
 import uuid
 import importlib
 from typing import Optional, TYPE_CHECKING, Dict, Any
@@ -11,8 +10,9 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import JSON
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-  
-from sqlalchemy import Column, DateTime, func 
+
+from sqlalchemy import DateTime, func
+
 
 class OrderItemBase(SQLModel):
     sku: str = Field(nullable=False)
@@ -23,7 +23,7 @@ class OrderItemBase(SQLModel):
     tax_cents: int = Field(nullable=False, default=0)
     discount_cents: int = Field(nullable=False, default=0)
     total_cents: int = Field(nullable=False, default=0)
-    currency: str = Field(default='EUR', nullable=False)
+    currency: str = Field(default="EUR", nullable=False)
     variant_json: Optional[Dict[str, Any]] = Field(default=None, sa_type=JSON, nullable=True)
     metadata_json: Optional[Dict[str, Any]] = Field(default=None, sa_type=JSON, nullable=True)
     created_at: datetime = Field(

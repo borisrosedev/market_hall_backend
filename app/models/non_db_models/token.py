@@ -5,6 +5,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime, timezone
 from app.models.non_db_models.cookie import CookiePayload
 
+
 # JSON payload containing access token
 class Token(BaseModel):
     access_token: str
@@ -13,7 +14,7 @@ class Token(BaseModel):
 
 class TokenPayload(BaseModel):
     sub: str
-    usr: CookiePayload  
-    exp: int           
+    usr: CookiePayload
+    exp: int
     iat: int | None = None
     nbf: int | None = None

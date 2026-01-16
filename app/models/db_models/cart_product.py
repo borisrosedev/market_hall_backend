@@ -4,7 +4,8 @@ from ...database import db
 
 
 class CartProduct(db.Model):
-    """ Product in the Cart """
+    """Product in the Cart"""
+
     __tablename__ = "cart_products"
 
     cart_id: Mapped[int] = mapped_column(
@@ -21,7 +22,6 @@ class CartProduct(db.Model):
     cart: Mapped["Cart"] = relationship(back_populates="items")
     product: Mapped["Product"] = relationship(back_populates="carts_link")
 
-
     __table_args__ = (
         CheckConstraint("quantity >= 0", name="ck_cart_products_quantity_non_negative"),
         Index("ix_cart_products_cart", "cart_id"),
@@ -29,4 +29,6 @@ class CartProduct(db.Model):
     )
 
     def __repr__(self) -> str:
-        return f"<CartProduct cart_id={self.cart_id} product_id={self.product_id} qty={self.quantity}>"
+        return (
+            f"<CartProduct cart_id={self.cart_id} product_id={self.product_id} qty={self.quantity}>"
+        )

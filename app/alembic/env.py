@@ -25,8 +25,10 @@ from app.models.db_models import __all_models__  # noqa: F401,E402  (side-effect
 # Metadata cible to autogenerate
 target_metadata = SQLModel.metadata
 
+
 def get_url() -> str:
     return str(settings.SQLALCHEMY_DATABASE_URI)
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
@@ -35,11 +37,12 @@ def run_migrations_offline() -> None:
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        compare_type=True,        
+        compare_type=True,
         # render_as_batch=True,     # no use of SQLite
     )
     with context.begin_transaction():
         context.run_migrations()
+
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
@@ -58,10 +61,11 @@ def run_migrations_online() -> None:
             target_metadata=target_metadata,
             compare_type=True,
             # include_schemas=True,                # if you use x schemas
-            # version_table_schema="public",       # stock alembic schema 
+            # version_table_schema="public",       # stock alembic schema
         )
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

@@ -1,8 +1,7 @@
 import json
 import sqlalchemy as sa
 from ....database import db
-from ....models.db_models import (__all_db_models__ as db_model)
-
+from ....models.db_models import __all_db_models__ as db_model
 
 
 def notify_all_users_product_published(product) -> None:
@@ -12,12 +11,12 @@ def notify_all_users_product_published(product) -> None:
     payload = {
         "p_id": product.id,
         "p_name": product.name,
-        "p_photo_name": getattr(product, "photo_name", None)
+        "p_photo_name": getattr(product, "photo_name", None),
     }
     sel = sa.select(
         db_model.User.id,
         sa.literal("product.published"),
-        sa.literal(payload, type_=sa.JSON),        
+        sa.literal(payload, type_=sa.JSON),
         sa.literal(db_model.NotificationStatus.unread.value),
     )
 

@@ -25,7 +25,7 @@ class User(db.Model):
     photo_name: Mapped[Optional[str]] = mapped_column(nullable=True)
     role: Mapped[UserRoles] = mapped_column(Enum(UserRoles), default=UserRoles.standard)
 
-    # one-to-one 
+    # one-to-one
     cart: Mapped[Optional["Cart"]] = relationship(
         back_populates="user",
         uselist=False,
@@ -38,7 +38,7 @@ class User(db.Model):
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,
-        single_parent=True,   
+        single_parent=True,
         order_by="desc(Notification.created_at)",
     )
 
@@ -46,8 +46,7 @@ class User(db.Model):
         db.DateTime(timezone=True), server_default=func.now(), nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        db.DateTime(timezone=True), server_default=func.now(),
-        onupdate=func.now(), nullable=False
+        db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
 
     @property
@@ -56,9 +55,7 @@ class User(db.Model):
 
     @password.setter
     def password(self, plain_password: str):
-        self.password_hash = generate_password_hash(
-            plain_password, method="pbkdf2:sha256:600000"
-        )
+        self.password_hash = generate_password_hash(plain_password, method="pbkdf2:sha256:600000")
 
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
@@ -78,6 +75,5 @@ class User(db.Model):
             "fullname": self.get_fullname(),
             "created_at": self.created_at,
             "updated_at": self.updated_at,
-            "cart_id": self.cart.id
-
+            "cart_id": self.cart.id,
         }

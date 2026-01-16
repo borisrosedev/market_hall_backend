@@ -9,16 +9,16 @@ from app.models.non_db_models.user import UserCreate, UserUpdate
 def create_user(*, session: Session, user_create: UserCreate) -> User:
     db_obj = User.model_validate(
         user_create,
-        update={"password_hash": get_password_hash(user_create.password.get_secret_value())}
+        update={"password_hash": get_password_hash(user_create.password.get_secret_value())},
     )
-    
+
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)
     return db_obj
 
 
-def get_all_users(*,session: Session) -> list[User] | None:
+def get_all_users(*, session: Session) -> list[User] | None:
     statement = select(User).order_by(User.created_at.desc())
     return list(session.exec(statement=statement).all())
 

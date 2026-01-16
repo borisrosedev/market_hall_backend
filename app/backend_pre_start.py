@@ -11,8 +11,8 @@ from app.core.config import settings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-MAX_TRIES = 60 * 5   # 5 minutes
-WAIT_SECONDS = 1     # 1s entre tentatives
+MAX_TRIES = 60 * 5  # 5 minutes
+WAIT_SECONDS = 1  # 1s entre tentatives
 
 # Engine local uniquement pour le ping
 engine = create_engine(
@@ -21,6 +21,7 @@ engine = create_engine(
     pool_pre_ping=True,
     future=True,
 )
+
 
 @retry(
     stop=stop_after_attempt(MAX_TRIES),
@@ -33,10 +34,12 @@ def wait_for_db() -> None:
     with engine.connect() as conn:
         conn.execute(text("SELECT 1"))
 
+
 def main() -> None:
     logger.info("Waiting for database to be ready…")
     wait_for_db()
     logger.info("Database is ready.")
+
 
 if __name__ == "__main__":
     main()

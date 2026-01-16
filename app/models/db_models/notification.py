@@ -11,6 +11,7 @@ class NotificationStatus(enum.Enum):
     read = "read"
     unread = "unread"
 
+
 class Notification(db.Model):
     __tablename__ = "notifications"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -29,18 +30,13 @@ class Notification(db.Model):
     created_at: Mapped[datetime] = mapped_column(
         db.DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    read_at: Mapped[Optional[datetime]] = mapped_column(
-        db.DateTime(timezone=True), nullable=True
-    )
+    read_at: Mapped[Optional[datetime]] = mapped_column(db.DateTime(timezone=True), nullable=True)
     user: Mapped["User"] = relationship(back_populates="notifications")
-    
+
     def set_read_at(self) -> None:
         """Marked as read DB-side-wise"""
         self.read_at = func.now()
 
     __table_args__ = (
-        db.Index(
-            "ix_notifications_user_status_created",
-            "user_id", "status", "created_at"
-        ),
+        db.Index("ix_notifications_user_status_created", "user_id", "status", "created_at"),
     )

@@ -20,6 +20,7 @@ def to_float(value, default=None):
     except (ValueError, TypeError):
         return default
 
+
 def to_int(value, default=None):
     if value is None:
         return default

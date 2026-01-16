@@ -2,104 +2,102 @@ import logging
 import os
 from pathlib import Path
 from flask import Blueprint, request, jsonify, session
-from ....database import db 
+from ....database import db
 from ....models.db_models.user import User
 from ....models.db_models.order import Order
 
-api_v1_orders = Blueprint("api_v1_orders", __name__,url_prefix="/api/v1/orders")
+api_v1_orders = Blueprint("api_v1_orders", __name__, url_prefix="/api/v1/orders")
 
 logging.basicConfig(level=logging.DEBUG)
- 
 
-@api_v1_orders.route("/<int:order_id>", methods=["GET","PUT", "DELETE"])
-#@session_required 
-def update_get_or_delete_order(order_id): 
-    """ Update/GET/DELETE a order """
+
+@api_v1_orders.route("/<int:order_id>", methods=["GET", "PUT", "DELETE"])
+# @session_required
+def update_get_or_delete_order(order_id):
+    """Update/GET/DELETE a order"""
     if request.method in ("PUT"):
-        order = db.session.execute(db.select(Order).filter_by(id=order_id )).scalar()
+        order = db.session.execute(db.select(Order).filter_by(id=order_id)).scalar()
         if not order:
             return jsonify(message="order not found"), 404
-        
-        #test_info_request(request)
+
+        # test_info_request(request)
         data = request.get_json()
-        #print (f"email {session["email"]}")
+        # print (f"email {session["email"]}")
         user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        if user is None :
+        if user is None:
             return jsonify(message="invalid user data"), 400
-        #print (f"user {user}")
-        current_user =user.to_dict()
-        #print (f"current_user {current_user}")
+        # print (f"user {user}")
+        current_user = user.to_dict()
+        # print (f"current_user {current_user}")
         if not current_user:
-            return jsonify(message="invalid user data"), 400 
-        
-        user_id =  current_user['id']   
-        amounts_cents= data.get('amounts_cents')  
-        currency= data.get('currency')
-        status = data.get('status') 
-         
+            return jsonify(message="invalid user data"), 400
+
+        user_id = current_user["id"]
+        amounts_cents = data.get("amounts_cents")
+        currency = data.get("currency")
+        status = data.get("status")
+
         if user_id:
             order.user_id = user_id
         if amounts_cents:
             order.amounts_cents = amounts_cents
         if currency:
-            order.currency = currency  
+            order.currency = currency
         if status:
-            order.status = status   
-         
+            order.status = status
+
         db.session.commit()
         return jsonify(message="order updated"), 200
-    
-         
+
     elif request.method == "GET":
-        order =  db.session.execute(db.select(Order).filter_by(id=order_id )).scalar()
+        order = db.session.execute(db.select(Order).filter_by(id=order_id)).scalar()
         if not order:
             return jsonify(message="order not found"), 404
-         
+
         return jsonify(order=order.to_dict())
     else:
-        order =  db.session.execute(db.select(Order).filter_by(id=order_id )).scalar()
+        order = db.session.execute(db.select(Order).filter_by(id=order_id)).scalar()
         if not order:
             return jsonify(message="order not found"), 404
         db.session.delete(order)
         db.session.commit()
         return jsonify(message="order deleted")
- 
+
 
 @api_v1_orders.route("/", methods=["POST", "GET"])
-#@session_required 
+# @session_required
 def get_all_or_create_order():
-    """ GET ALL ORDERS OR CREATE A ORDER """  
-    if request.method == "GET": 
+    """GET ALL ORDERS OR CREATE A ORDER"""
+    if request.method == "GET":
         orders = db.session.execute(db.select(Order).order_by(Order.id)).scalars()
         return jsonify(orders=[order.to_dict() for order in orders])
-    else: 
+    else:
         data = request.get_json()
 
-         
-        #test_info_request(request)
-        #print (f"email {session["email"]}")
+        # test_info_request(request)
+        # print (f"email {session["email"]}")
         user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar()
-        if user is None :
-            return jsonify(message="invalid user data"), 400 
-        
-        current_user =user.to_dict() 
+        if user is None:
+            return jsonify(message="invalid user data"), 400
+
+        current_user = user.to_dict()
         if not current_user:
-            return jsonify(message="invalid user data"), 400 
-        
-        user_id =  current_user['id'] 
-        #user_id = data.get('user_id')
-        amounts_cents =data.get('amounts_cents')
-        currency = data.get('currency')
-        status = data.get('status') 
-        
+            return jsonify(message="invalid user data"), 400
+
+        user_id = current_user["id"]
+        # user_id = data.get('user_id')
+        amounts_cents = data.get("amounts_cents")
+        currency = data.get("currency")
+        status = data.get("status")
+
         try:
             order = Order(
                 user_id=user_id,
-                amounts_cents= amounts_cents,
-                currency=currency, 
-                status=status, 
+                amounts_cents=amounts_cents,
+                currency=currency,
+                status=status,
             )
-           
+
             db.session.add(order)
             db.session.commit()
             return jsonify(message="order created"), 201
@@ -107,6 +105,3 @@ def get_all_or_create_order():
             logging.error("Error adding order: %s", e)
             db.session.rollback()
             return jsonify(message="error adding order"), 500
-
-          
-    

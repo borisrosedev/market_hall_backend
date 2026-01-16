@@ -1,3 +1,6 @@
-from .file import multipart_form_data_with_specific_extension_file, multipart_form_data_with_specific_extension_file_and_keys
+from .file import (
+    multipart_form_data_with_specific_extension_file,
+    multipart_form_data_with_specific_extension_file_and_keys,
+)
 from .json import json_required_with_keys, json_required_with_validation
 from .auth import admin_required_with_exceptions

@@ -6,7 +6,7 @@ from ...database import db
 from ..utils.type_utils import to_float, to_bool, to_int
 from ..helpers.tags_helper import tags_helper
 from ..services.decorators.auth import admin_required
-from ..services.decorators.file import  unique_filename_required
+from ..services.decorators.file import unique_filename_required
 from ..services.factories.file import multipart_form_data_with_specific_extension_file_and_keys
 from ..services.factories.auth import admin_required_with_exceptions
 from ..utils.files_utils import delete_file_in_uploads_folder
@@ -15,51 +15,49 @@ from ...models.db_models.user import User
 from ...models.db_models.product import Product
 
 
-UPLOAD_FOLDER=Path(os.getcwd() + "/uploads")
+UPLOAD_FOLDER = Path(os.getcwd() + "/uploads")
 
-api_v1_products = Blueprint("api_v1_products", __name__,url_prefix="/api/v1/products")
+api_v1_products = Blueprint("api_v1_products", __name__, url_prefix="/api/v1/products")
 logging.basicConfig(level=logging.DEBUG)
 
 
-
-
 @api_v1_products.route("/", methods=["POST", "GET"])
-@admin_required_with_exceptions(True, "GET")
+# @admin_required_with_exceptions(True, "GET") commenté pour pouvoir créer des produits avec n'importe quel rôle connecté
 @multipart_form_data_with_specific_extension_file_and_keys(
-    ["png","jpg","webp", "gif","jpeg"],
-    ["description", "name","price_cents", "quantity", "tags"]
+    ["png", "jpg", "webp", "gif", "jpeg"],
+    ["description", "name", "price_cents", "quantity", "tags"],
 )
 @unique_filename_required
-def get_all_delete_all_or_create_product(unique_name:str=None):
-    """ GET ALL PRODUCTS OR CREATE A PRODUCT """      
+def get_all_delete_all_or_create_product(unique_name: str = None):
+    """GET ALL PRODUCTS OR CREATE A PRODUCT"""
     if request.method == "GET":
-        products = db.session.execute(db.select(Product)).scalars()    
+        products = db.session.execute(db.select(Product)).scalars()
         return jsonify(products=[product.to_dict() for product in products])
     if request.method == "DELETE":
         db.session.query(Product).delete()
         db.session.commit()
         return jsonify(message="all products deleted")
-    description = request.form.get('description') 
-    name = request.form.get('name')
-    is_available= request.form.get('is_available') if request.form.get('is_available') else True
-    price_cents= request.form.get('price_cents')
-    tags = request.form.get('tags')
-    quantity= request.form.get('quantity')
-    sku= request.form.get('sku')
+    description = request.form.get("description")
+    name = request.form.get("name")
+    is_available = request.form.get("is_available") if request.form.get("is_available") else True
+    price_cents = request.form.get("price_cents")
+    tags = request.form.get("tags")
+    quantity = request.form.get("quantity")
+    sku = request.form.get("sku")
     file = request.files["file"]
     file.save(os.path.join(UPLOAD_FOLDER, unique_name))
-    #test_info_request(request)
+    # test_info_request(request)
     try:
         product = Product(
             description=description,
-            is_available=is_available, 
+            is_available=is_available,
             name=name,
             photo_name=unique_name,
             price_cents=price_cents,
             quantity=quantity,
             sku=sku,
         )
-        tags_helper(product=product,tags=tags)
+        tags_helper(product=product, tags=tags)
         db.session.add(product)
         db.session.commit()
         return jsonify(message="product created"), 201
@@ -88,6 +86,7 @@ def delete_one_product_tag(product_id, tag_id):
 
     return jsonify(message="tag removed"), 200
 
+
 @api_v1_products.route("/<int:product_id>", methods=["DELETE", "GET", "PUT", "PATCH"])
 @admin_required_with_exceptions(True, "GET")
 @unique_filename_required
@@ -98,7 +97,6 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
         ).scalar_one_or_none()
         if not product:
             return jsonify(message="product not found"), 404
-
 
         if request.is_json:
             data = request.get_json()
@@ -119,7 +117,9 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
 
             description = request.form.get("description")
             name = request.form.get("name")
-            is_available = request.form.get("is_available") if "is_available" in request.form else None
+            is_available = (
+                request.form.get("is_available") if "is_available" in request.form else None
+            )
             price_cents = request.form.get("price_cents")
             tags = request.form.get("tags")
             quantity = request.form.get("quantity")
@@ -144,21 +144,25 @@ def get_update_delete_one_product(product_id, unique_name: str = None):
         if sku is not None:
             val = to_int(sku)
             if val is not None:
-                product.sku = val        
+                product.sku = val
         if tags is not None:
-           tags_helper(product=product, tags=tags)
+            tags_helper(product=product, tags=tags)
 
         db.session.commit()
         return jsonify(message="product updated"), 200
 
     if request.method == "GET":
-        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar_one_or_none()
+        product = db.session.execute(
+            db.select(Product).filter_by(id=product_id)
+        ).scalar_one_or_none()
         if not product:
             return jsonify(message="product not found"), 404
         return jsonify(product=product.to_dict())
 
     if request.method == "DELETE":
-        product = db.session.execute(db.select(Product).filter_by(id=product_id)).scalar_one_or_none()
+        product = db.session.execute(
+            db.select(Product).filter_by(id=product_id)
+        ).scalar_one_or_none()
         if not product:
             return jsonify(message="product not found"), 404
         if isinstance(product.photo_name, str):

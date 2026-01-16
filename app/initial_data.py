@@ -9,11 +9,13 @@ logger = logging.getLogger(__name__)
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI), pool_pre_ping=True, future=True)
 
+
 def main() -> None:
     logger.info("Creating initial data")
     with Session(engine) as session:
         init_db(session)  # create super user and data (idempotent)
     logger.info("Initial data created")
+
 
 if __name__ == "__main__":
     main()

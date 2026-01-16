@@ -1,4 +1,3 @@
-
 import uuid, enum
 from typing import Optional
 from pydantic import EmailStr
