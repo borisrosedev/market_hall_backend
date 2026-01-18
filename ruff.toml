@@ -1,7 +1,0 @@
-target-version = "py39"
-line-length = 100
-extend-exclude = ["migrations", "venv", ".venv"]
-
-[lint]
-ignore = ["F401", "E401"]
-fixable = ["ALL"]
