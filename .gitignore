@@ -21,3 +21,6 @@ testing_images/
 !.env.project
 !.env.vault
 notes.cmd
+pgdata/
+check_db.py
+test_api.py
