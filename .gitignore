@@ -24,3 +24,5 @@ notes.cmd
 pgdata/
 check_db.py
 test_api.py
+sql.sql
+.vscode/
