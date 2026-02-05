@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if grep "alice" users.txt > /dev/null
+then
+    echo "✅ alice trouvée"
+else
+    echo "❌ alice pas trouvée"
+fi
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Ma machcine courant est : $(PWD)"
+
